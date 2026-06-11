@@ -8,17 +8,16 @@ from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart
 from aiogram.types import Message
 from src.config import settings
+from src.start.handlers import router as start_router
+from src.player.handlers import router as player_router
 
 dp = Dispatcher()
 
 
-@dp.message(CommandStart())
-async def command_start_handler(message: Message) -> None:
-    await message.answer(f"Hello, {html.bold(message.from_user.full_name)}!")
-
-
 async def main() -> None:
-    bot = Bot(token=settings.BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
+    bot = Bot(token=settings.BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.MARKDOWN))
+    dp.include_router(start_router)
+    dp.include_router(player_router)
     await dp.start_polling(bot)
 
 
