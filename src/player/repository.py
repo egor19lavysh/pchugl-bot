@@ -37,7 +37,7 @@ class PlayerRepository:
             await session.refresh(player)
             return player
 
-    async def get_players() -> list[Player]:
+    async def get_players(self) -> list[Player]:
         """
         Получает всех игроков из базы данных
         """
@@ -65,16 +65,12 @@ class PlayerRepository:
         """
         Обновляет указанное поле в анкете игрока и возвращает обновленную анкету.
         """
-        # Prevent updating arbitrary SQL identifiers
-        if field_name not in Player.__table__.c:
-            raise ValueError(f"Unknown field for Player: {field_name}")
-
         async with get_async_session() as session:
             await session.execute(
                     update(Player).where(Player.id == player_id).values({field_name: value})
                 )
             await session.commit()
-        return self.get_player_by_id(player_id)
+        return await self.get_player_by_id(player_id)
     
     async def delete_player(self, player_id: int) -> None:
         """
