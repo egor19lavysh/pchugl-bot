@@ -22,7 +22,7 @@ REGISTER_LIMIT = "Достигнут лимит регистраций. Вы м�
 ERROR = "Произошла ошибка. Попробуйте еще раз."
 NEED_TEXT = "Введите текст!"
 BACK = "Назад"
-BACK_INLINE = "back"
+BACK_INLINE = "Назад"
 SUCCESSFUL_SAVING = "Ваша анкета сохранена. Вы можете ее посмотреть, опубликовать, изменить или удалить с помощью /profiles"
 SAVING_FAILED = "При сохранении ошибка. Попытайтесь позже."
 DENY_PROFILE = "Создание анкеты отменено."
@@ -215,7 +215,7 @@ async def language_handler(callback: CallbackQuery, state: FSMContext):
             await state.set_state(PlayerStates.account_strength)
             return
         
-        if data not in ["RU", "UA", "EN", "другое"]:
+        if data not in ["RU", "UA", "EN", "Другое"]:
             await callback.message.answer("Некорректное значение!")
             await callback.message.answer(LANGUAGE, reply_markup=await language_kb())
             return
@@ -244,7 +244,7 @@ async def requirements_hydra_handler(callback: CallbackQuery, state: FSMContext)
             await state.set_state(PlayerStates.language)
             return
         
-        if data not in "до 1В, 4В, 8В, 12В, 16В, 20В, 24В, от 28В".split(", "):
+        if data not in "До 1В, 4В, 8В, 12В, 16В, 20В, 24В, От 28В".split(", "):
             await callback.message.answer("Некорректное значение!")
             await callback.message.answer(HYDRA, reply_markup=await hydra_kb())
             return
@@ -273,7 +273,7 @@ async def requirements_himera_handler(callback: CallbackQuery, state: FSMContext
             await state.set_state(PlayerStates.requirements_hydra)
             return
         
-        if data not in "до 1В, 4В, 8В, 12В, 16В, 20В, 24В, от 28В".split(", "):
+        if data not in "До 1В, 4В, 8В, 12В, 16В, 20В, 24В, От 28В".split(", "):
             await callback.message.answer("Некорректное значение!")
             await callback.message.answer(HIMERA, reply_markup=await himera_kb())
             return
@@ -302,7 +302,7 @@ async def requirements_lkv_handler(callback: CallbackQuery, state: FSMContext):
             await state.set_state(PlayerStates.requirements_himera)
             return
         
-        if data not in "до 100К, 200К, 300К, 400К, 500К, 600К, 700К, от 800К".split(", "):
+        if data not in "До 100К, 200К, 300К, 400К, 500К, 600К, 700К, От 800К".split(", "):
             await callback.message.answer("Некорректное значение!")
             await callback.message.answer(LKV, reply_markup=await lkv_kb())
             return
@@ -331,7 +331,7 @@ async def sieges_league_handler(callback: CallbackQuery, state: FSMContext):
             await state.set_state(PlayerStates.requirements_lkv)
             return
         
-        if data not in "до 5, 6, 7, 8".split(", "):
+        if data not in "До 5, 6, 7, 8".split(", "):
             await callback.message.answer("Некорректное значение!")
             await callback.message.answer(SIEGES, reply_markup=await sieges_kb())
             return
