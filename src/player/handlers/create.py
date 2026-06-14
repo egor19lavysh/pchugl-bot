@@ -4,6 +4,7 @@ from src.player.service import service
 from src.player.states import PlayerStates
 from aiogram.fsm.context import FSMContext
 from src.player.keyboards import *
+from src.utils import cancel_on_command
 
 
 router = Router()
@@ -22,13 +23,12 @@ REGISTER_LIMIT = "Достигнут лимит регистраций. Вы м�
 ERROR = "Произошла ошибка. Попробуйте еще раз."
 NEED_TEXT = "Введите текст!"
 BACK = "Назад"
-BACK_INLINE = "Назад"
 SUCCESSFUL_SAVING = "Ваша анкета сохранена. Вы можете ее посмотреть, опубликовать, изменить или удалить с помощью /profiles"
 SAVING_FAILED = "При сохранении ошибка. Попытайтесь позже."
 DENY_PROFILE = "Создание анкеты отменено."
 
-@router.callback_query(F.data == "player")
-async def player_handler(callback: CallbackQuery, state: FSMContext):
+@router.callback_query(F.data == "create_player")
+async def create_player_handler(callback: CallbackQuery, state: FSMContext):
     await callback.answer()
 
     try:
@@ -43,7 +43,7 @@ async def player_handler(callback: CallbackQuery, state: FSMContext):
             await state.update_data(
                 user_id=callback.from_user.id
             )
-            await callback.message.answer(TITLE)
+            await callback.message.answer(TITLE, reply_markup=await back_kb())
             await state.set_state(PlayerStates.title)
         else:
             await callback.message.answer(REGISTER_LIMIT)
@@ -59,7 +59,7 @@ async def title_handler(message: Message, state: FSMContext):
         if message.text:
             
             if message.text == BACK:
-                await message.answer(DENY_PROFILE)
+                await message.answer(DENY_PROFILE, reply_markup=ReplyKeyboardRemove())
                 await state.clear()
                 return
             
@@ -67,7 +67,7 @@ async def title_handler(message: Message, state: FSMContext):
                     title=message.text
                 )
             
-            await message.answer(NICKNAME)
+            await message.answer(NICKNAME, reply_markup=await back_kb())
             await state.set_state(PlayerStates.nickname)
         else:
             await message.answer(NEED_TEXT)
@@ -77,14 +77,14 @@ async def title_handler(message: Message, state: FSMContext):
         await state.clear()
         await message.answer(ERROR)
 
-            
+
 @router.message(PlayerStates.nickname)
 async def nickname_handler(message: Message, state: FSMContext):
     try:
         if message.text:
             
             if message.text == BACK:
-                await message.answer(TITLE)
+                await message.answer(TITLE, reply_markup=await back_kb())
                 await state.set_state(PlayerStates.title)
                 return
             
@@ -112,7 +112,7 @@ async def tg_tag_handler(message: Message, state: FSMContext):
             elif message.text == "Пропустить":
                 tag = None
             elif message.text == BACK:
-                await message.answer(NICKNAME)
+                await message.answer(NICKNAME, reply_markup=await back_kb())
                 await state.set_state(PlayerStates.nickname)
                 return
             else:
@@ -122,7 +122,7 @@ async def tg_tag_handler(message: Message, state: FSMContext):
                     tg_tag=tag
                 )
             
-            await message.answer(LEVEL, reply_markup=ReplyKeyboardRemove())
+            await message.answer(LEVEL, reply_markup=await back_kb())
             await state.set_state(PlayerStates.level)
         else:
             await message.answer(NEED_TEXT)
@@ -157,7 +157,7 @@ async def level_handler(message: Message, state: FSMContext):
                     level=num
                 )
             
-            await message.answer(ACCOUNT_STREGTH, reply_markup=ReplyKeyboardRemove())
+            await message.answer(ACCOUNT_STREGTH, reply_markup=await back_kb())
             await state.set_state(PlayerStates.account_strength)
         else:
             await message.answer(NEED_TEXT)
@@ -173,7 +173,7 @@ async def account_strength_handler(message: Message, state: FSMContext):
         if message.text:
             
             if message.text == BACK:
-                await message.answer(LEVEL, reply_markup=ReplyKeyboardRemove())
+                await message.answer(LEVEL, reply_markup=await back_kb())
                 await state.set_state(PlayerStates.level)
                 return
             
@@ -199,7 +199,6 @@ async def account_strength_handler(message: Message, state: FSMContext):
             
     except Exception as e:
         print(e)
-        print(await state.get_data())
         await state.clear()
         await message.answer(ERROR)
 
@@ -210,8 +209,8 @@ async def language_handler(callback: CallbackQuery, state: FSMContext):
         data = callback.data.split("_")[-1]
         await callback.message.edit_text(data, reply_markup=None)
 
-        if data == BACK_INLINE:
-            await callback.message.answer(ACCOUNT_STREGTH, reply_markup=ReplyKeyboardRemove())
+        if data == BACK:
+            await callback.message.answer(ACCOUNT_STREGTH, reply_markup=await back_kb())
             await state.set_state(PlayerStates.account_strength)
             return
         
@@ -239,7 +238,7 @@ async def requirements_hydra_handler(callback: CallbackQuery, state: FSMContext)
         data = callback.data.split("_")[-1]
         await callback.message.edit_text(data, reply_markup=None)
 
-        if data == BACK_INLINE:
+        if data == BACK:
             await callback.message.answer(LANGUAGE, reply_markup=await language_kb())
             await state.set_state(PlayerStates.language)
             return
@@ -268,7 +267,7 @@ async def requirements_himera_handler(callback: CallbackQuery, state: FSMContext
         data = callback.data.split("_")[-1]
         await callback.message.edit_text(data, reply_markup=None)
 
-        if data == BACK_INLINE:
+        if data == BACK:
             await callback.message.answer(HYDRA, reply_markup=await hydra_kb())
             await state.set_state(PlayerStates.requirements_hydra)
             return
@@ -297,7 +296,7 @@ async def requirements_lkv_handler(callback: CallbackQuery, state: FSMContext):
         data = callback.data.split("_")[-1]
         await callback.message.edit_text(data, reply_markup=None)
 
-        if data == BACK_INLINE:
+        if data == BACK:
             await callback.message.answer(HIMERA, reply_markup=await himera_kb())
             await state.set_state(PlayerStates.requirements_himera)
             return
@@ -326,7 +325,7 @@ async def sieges_league_handler(callback: CallbackQuery, state: FSMContext):
         data = callback.data.split("_")[-1]
         await callback.message.edit_text(data, reply_markup=None)
 
-        if data == BACK_INLINE:
+        if data == BACK:
             await callback.message.answer(LKV, reply_markup=await lkv_kb())
             await state.set_state(PlayerStates.requirements_lkv)
             return
@@ -340,7 +339,7 @@ async def sieges_league_handler(callback: CallbackQuery, state: FSMContext):
             sieges_league=data
         )
 
-        await callback.message.answer("Сохраняем анкету...")
+        await callback.message.answer("Сохраняем анкету...", reply_markup=ReplyKeyboardRemove())
         await state.set_state(None)
         await save_player(bot=callback.bot, state=state)
             

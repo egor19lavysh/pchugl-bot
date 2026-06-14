@@ -1,6 +1,6 @@
 from src.player.models import Player
 from src.player.repository import repository, PlayerRepository
-from src.utils import is_subscriber
+from src.utils import is_subscriber, PLAYER_TEMPLATE
 from aiogram import Bot
 
 
@@ -72,6 +72,25 @@ class PlayerService:
         answer["can_register"] = max_profiles_num - len(profiles) > 0
 
         return answer
+    
+    async def get_player_info(self, player_id: int) -> str | None:
+        """
+        Возвращает верстку для просмотра профиля игрока
+        """
+        if player := await self.get_player_by_id(player_id=player_id):
+            return PLAYER_TEMPLATE.format(
+                nickname=player.nickname,
+                tg_tag= '@' + player.tg_tag if player.tg_tag else "не указан",
+                level=player.level,
+                account_strength=player.account_strength,
+                language=player.language,
+                hydra=player.requirements_hydra,
+                himera=player.requirements_himera,
+                lkv=player.requirements_lkv,
+                sieges=player.sieges_league
+            )
+        return None
+
             
 
 service = PlayerService()

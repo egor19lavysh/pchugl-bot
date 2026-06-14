@@ -12,3 +12,19 @@ class PlayerStates(StatesGroup):
     requirements_hydra = State()
     requirements_himera = State()
     requirements_lkv = State()
+
+class UpdatePlayerStates(StatesGroup):
+    choice = State()
+    title = State()
+    nickname = State()
+    tg_tag = State()
+    level = State()
+    account_strength = State()
+    language = State()
+    sieges_league = State()
+    requirements_hydra = State()
+    requirements_himera = State()
+    requirements_lkv = State()
+
+class DeletePlayerStates(StatesGroup):
+    confirm = State()
