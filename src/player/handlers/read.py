@@ -56,13 +56,13 @@ async def player_handler(callback: CallbackQuery):
     if data == BACK:
         await profiles_cmd(callback.message)
         return
-
+    
     player_id = int(data)
     player_info = await service.get_player_info(player_id=player_id)
     player = await service.get_player_by_id(player_id=player_id)
 
     if player_info:
-        await callback.message.answer(TITLE.format(title=player.title) + player_info, reply_markup=await get_player_profile_actions(player_id=player_id))
+        await callback.message.answer(TITLE.format(title=player.title) + player_info, reply_markup=await get_player_profile_actions(player_id=player_id, is_published=player.is_published))
     else:
         await callback.message.answer(NO_PROFILE)
 

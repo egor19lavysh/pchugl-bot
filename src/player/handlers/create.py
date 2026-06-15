@@ -4,7 +4,6 @@ from src.player.service import service
 from src.player.states import PlayerStates
 from aiogram.fsm.context import FSMContext
 from src.player.keyboards import *
-from src.utils import cancel_on_command
 
 
 router = Router()

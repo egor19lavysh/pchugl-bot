@@ -4,7 +4,6 @@ from src.player.service import service
 from src.player.states import UpdatePlayerStates
 from src.player.keyboards import get_player_fields_for_update
 from aiogram.fsm.context import FSMContext
-from src.utils import cancel_on_command
 from src.player.keyboards import *
 from src.player.handlers.read import user_players_handler, user_players_handler_with_bot
 from src.player.models import Player
@@ -43,7 +42,6 @@ async def update_player_handler(callback: CallbackQuery, state: FSMContext):
     await state.set_state(UpdatePlayerStates.choice)
 
 @router.callback_query(UpdatePlayerStates.choice)
-@cancel_on_command
 async def field_handler(callback: CallbackQuery, state: FSMContext):
     
     field = callback.data.split("_")[-1]

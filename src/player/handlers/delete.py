@@ -4,7 +4,6 @@ from src.player.service import service
 from src.player.keyboards import get_confirm_delete
 from src.player.states import DeletePlayerStates
 from aiogram.fsm.context import FSMContext
-from src.utils import cancel_on_command
 from src.start.handlers import profiles_cmd
 from src.player.handlers.read import user_players_handler
 
@@ -35,8 +34,6 @@ async def delete_handler(callback: CallbackQuery, state: FSMContext):
         await callback.message.answer(NO_PROFILE)
 
 @router.callback_query(DeletePlayerStates.confirm)
-@router.message(DeletePlayerStates.confirm)
-@cancel_on_command
 async def delete_confirm_handler(callback: CallbackQuery, state: FSMContext):
     answer = callback.data.split("_")[-1]
 

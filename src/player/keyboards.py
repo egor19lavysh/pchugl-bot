@@ -84,6 +84,10 @@ async def get_user_player_profiles(players: list[Player]) -> InlineKeyboardMarku
         )
     
     builder.add(
+        InlineKeyboardButton(text="Опубликовать все", callback_data=f"publish_all")
+    )
+
+    builder.add(
         InlineKeyboardButton(text="Назад", callback_data=f"player_Назад")
     )
 
@@ -91,12 +95,12 @@ async def get_user_player_profiles(players: list[Player]) -> InlineKeyboardMarku
 
     return builder.as_markup()
 
-async def get_player_profile_actions(player_id: int) -> InlineKeyboardMarkup:
+async def get_player_profile_actions(player_id: int, is_published: bool = False) -> InlineKeyboardMarkup:
     """
     Отдает возможные действия с анкетой
     """
     kb = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="📢 Опубликовать", callback_data=f"publish_player_{player_id}")],
+        [InlineKeyboardButton(text="📢 Опубликовать", callback_data=f"publish_player_{player_id}") if not is_published else InlineKeyboardButton(text="Снять с публикации", callback_data=f"unpublish_player_{player_id}") ],
         [InlineKeyboardButton(text="Изменить", callback_data=f"update_player_{player_id}")],
         [InlineKeyboardButton(text="Удалить", callback_data=f"delete_player_{player_id}")],
         [InlineKeyboardButton(text="Назад", callback_data=f"back_from_profile")],
@@ -112,6 +116,17 @@ async def get_confirm_delete() -> InlineKeyboardMarkup:
 
     return kb
 
+async def back_to_player(player_id: int) -> InlineKeyboardMarkup:
+    kb = InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="Назад", callback_data=f"player_{player_id}")]
+    ])
+    return kb
+
+async def back_to_players() -> InlineKeyboardMarkup:
+    kb = InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="Назад", callback_data=f"player")]
+    ])
+    return kb
 
 title = "Название анкеты"
 nick = "Ник"
@@ -137,5 +152,14 @@ async def get_player_fields_for_update() -> InlineKeyboardMarkup:
         [InlineKeyboardButton(text=sieges, callback_data="patch_player_field_" + sieges)],
         [InlineKeyboardButton(text="Назад", callback_data="patch_player_field_Назад")],
     ])
+
+    return kb
+
+async def publish_again(player_id: int) -> InlineKeyboardMarkup:
+    kb = InlineKeyboardMarkup(
+        inline_keyboard=[
+            [InlineKeyboardButton(text="Опубликовать снова", callback_data=f"publish_player_{player_id}")]
+        ]
+    )
 
     return kb
