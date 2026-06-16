@@ -84,7 +84,7 @@ async def get_user_player_profiles(players: list[Player]) -> InlineKeyboardMarku
         )
     
     builder.add(
-        InlineKeyboardButton(text="Опубликовать все", callback_data=f"publish_all")
+        InlineKeyboardButton(text="Опубликовать все", callback_data=f"publish_players")
     )
 
     builder.add(

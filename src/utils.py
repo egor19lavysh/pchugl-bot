@@ -26,3 +26,14 @@ PLAYER_TEMPLATE = """
 *ЛКВ*: {lkv}
 *Осады*: {sieges}
 """
+
+CLAN_TEMPLATE = """
+*Название клана*: {name}
+*Тг юзернейм*: {tg_tag}
+*Уровень*: {level}
+*Язык*: {language}
+*Гидра*: {hydra}
+*Химера*: {himera}
+*ЛКВ*: {lkv}
+*Осады*: {sieges}
+"""

@@ -8,7 +8,10 @@ from aiogram.enums import ParseMode
 from src.config import settings
 from src.start.handlers import router as start_router
 from src.player.handlers import routers as player_routers
-from src.player.service import service
+from src.clan.handlers import routers as clan_routers
+from src.player.service import service as player_service
+from src.clan.service import service as clan_service
+
 
 dp = Dispatcher()
 
@@ -19,15 +22,21 @@ async def main() -> None:
     scheduler.start()
 
     scheduler.add_job(
-         service.complete_unpublishing, "interval", hours=24, args=[bot]
+        player_service.complete_unpublishing, "interval", hours=24, args=[bot]
+    )
+    scheduler.add_job(
+        clan_service.complete_unpublishing, "interval", hours=24, args=[bot]
     )
 
     dp['scheduler'] = scheduler
 
+    dp.include_router(start_router)
+
     for router in player_routers:
         dp.include_router(router)
 
-    dp.include_router(start_router)
+    for router in clan_routers:
+        dp.include_router(router)
 
     await dp.start_polling(bot)
 

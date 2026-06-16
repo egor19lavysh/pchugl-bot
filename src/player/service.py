@@ -132,14 +132,14 @@ class PlayerService:
             return days
 
     
-    async def publish_players(self, bot: Bot, user_id: int) -> None:
+    async def publish_players(self, apscheduler: AsyncIOScheduler, bot: Bot, user_id: int) -> None:
         """
         Публикует все анкеты пользователя.
         """
         if players := await self.get_player(user_id=user_id):
             for player in players:
                 if not (await self.is_published(player_id=player.id)):
-                    await self.publish_player(bot=bot, player_id=player.id)
+                    await self.publish_player(apscheduler=apscheduler, bot=bot, player_id=player.id)
 
     async def unpublish_player(self, player_id: int) -> None:
         """
