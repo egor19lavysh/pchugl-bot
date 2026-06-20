@@ -8,6 +8,7 @@ from aiogram.enums import ParseMode
 from src.config import settings
 from src.start.handlers import router as start_router
 from src.player.handlers import routers as player_routers
+from src.fit.handlers import routers as fit_routers
 from src.clan.handlers import routers as clan_routers
 from src.player.service import service as player_service
 from src.clan.service import service as clan_service
@@ -36,6 +37,9 @@ async def main() -> None:
         dp.include_router(router)
 
     for router in clan_routers:
+        dp.include_router(router)
+
+    for router in fit_routers:
         dp.include_router(router)
 
     await dp.start_polling(bot)

@@ -36,3 +36,9 @@ async def profiles_cmd(message: Message, state: FSMContext = None):
     if state:
         await state.clear()
     await message.answer("Выбери тип анкеты:", reply_markup=await profiles_kb())
+
+@router.message(Command("fit"))
+async def fit_cmd(message: Message, state: FSMContext = None):
+    if state:
+        await state.clear()
+    await message.answer("Выбери тип анкет:", reply_markup=await fit_profiles_kb())

@@ -37,12 +37,37 @@ class ClanRepository:
             await session.refresh(clan)
             return clan
 
-    async def get_clans(self) -> list[Clan]:
+    async def get_clans(self, user_id: int) -> list[Clan]:
         """
         Получает всех игроков из базы данных
         """
         async with get_async_session() as session:
-            result = await session.execute(select(Clan))
+            result = await session.execute(select(Clan).where(Clan.user_id != user_id))
+            return result.scalars().all()
+        
+    async def get_clans_by_fields(self, user_id: int, filters: dict[str, str | int | bool | None]) -> list[Clan]:
+        """
+        Получает список игроков, отфильтрованных по набору полей и значений.
+        """
+        print(filters)
+        if not filters:
+            return await self.get_clans(user_id=user_id)
+
+        invalid_fields = [field for field in filters if field not in Clan.__table__.columns]
+        if invalid_fields:
+            raise ValueError(f"Недопустимые поля фильтрации: {', '.join(invalid_fields)}")
+
+        async with get_async_session() as session:
+            stmt = select(Clan)
+            for field_name, value in filters.items():
+                column = getattr(Clan, field_name)
+                if value is not None:
+                    stmt = stmt.where(column == value)
+            
+            stmt = stmt.where(Clan.user_id != user_id)
+            stmt = stmt.where(Clan.is_published == True)
+
+            result = await session.execute(stmt)
             return result.scalars().all()
 
     async def get_clan(self, user_id: int) -> list[Clan]:

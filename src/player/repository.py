@@ -37,12 +37,37 @@ class PlayerRepository:
             await session.refresh(player)
             return player
 
-    async def get_players(self) -> list[Player]:
+    async def get_players_by_fields(self, user_id: int, filters: dict[str, str | int | bool | None]) -> list[Player]:
+        """
+        Получает список игроков, отфильтрованных по набору полей и значений.
+        """
+        print(filters)
+        if not filters:
+            return await self.get_players(user_id=user_id)
+
+        invalid_fields = [field for field in filters if field not in Player.__table__.columns]
+        if invalid_fields:
+            raise ValueError(f"Недопустимые поля фильтрации: {', '.join(invalid_fields)}")
+
+        async with get_async_session() as session:
+            stmt = select(Player)
+            for field_name, value in filters.items():
+                column = getattr(Player, field_name)
+                if value is not None:
+                    stmt = stmt.where(column == value)
+            
+            stmt = stmt.where(Player.user_id != user_id)
+            stmt = stmt.where(Player.is_published == True)
+
+            result = await session.execute(stmt)
+            return result.scalars().all()
+
+    async def get_players(self, user_id: int) -> list[Player]:
         """
         Получает всех игроков из базы данных
         """
         async with get_async_session() as session:
-            result = await session.execute(select(Player))
+            result = await session.execute(select(Player).where(Player.user_id != user_id))
             return result.scalars().all()
 
     async def get_player(self, user_id: int) -> list[Player]:
