@@ -18,6 +18,9 @@ router = Router()
 SEACH_TYPE = "Выбери тип поиска:"
 LANGUAGE = "Укажите язык:"
 FINISH_FIT = "Анкеты закончились!"
+BACK = "Назад"
+NEXT = "Дальше"
+QUIT = "Выйти"
 
 
 @router.callback_query(F.data.startswith("fit_"))
@@ -83,6 +86,10 @@ async def start_fit(bot: Bot, user_id: int, state: FSMContext):
         elif entity == "clan":
             profiles = await service.filter_clans(user_id=user_id, filters=filters)
             
+        if not profiles:
+            await bot.send_message("Анкеты не нашлись...", reply_markup=await back_to_search())
+            await state.clear()
+            return
 
         await state.update_data(
             profiles=profiles,
@@ -98,27 +105,66 @@ async def show_profile(bot: Bot, user_id: int, state: FSMContext):
 
     profiles = data.get("profiles")
     index = data.get("index", 0)
+    entity = data.get("entity")
 
     if not profiles:
-        await bot.send_message(chat_id=user_id, text="Я потерял анкеты... Попробуйте снова")
+        await bot.send_message(chat_id=user_id, text="Анкеты не нашлись... Попробуйте снова", reply_markup=await back_to_search())
         await state.clear()
         return
 
-    if index < len(profiles):
+    if -1 < index < len(profiles):
         profile = profiles[index]
         info = await service.get_info(profile=profile)
         if getattr(profile, "photo", None):
             try:
-                await bot.send_photo(chat_id=user_id, photo=profile.photo, caption=info)
+                msg = await bot.send_photo(chat_id=user_id, photo=profile.photo, caption=info, reply_markup=await profile_action(entity=entity, profile_id=profile.id))
             except Exception as e:
                 print(e)
-                await bot.send_message(chat_id=user_id, text=info)
+                msg = await bot.send_message(chat_id=user_id, text=info, reply_markup=await profile_action(entity=entity, profile_id=profile.id))
         else:
-            await bot.send_message(chat_id=user_id, text=info)
+            msg = await bot.send_message(chat_id=user_id, text=info, reply_markup=await profile_action(entity=entity, profile_id=profile.id))
+
+        action_msg = await bot.send_message(chat_id=user_id, text="Выберите дейстивие:", reply_markup=await fit_action())
+        await state.update_data(
+            profile_msg=msg.message_id,
+            action_msg=action_msg.message_id
+        )
+        
         await state.set_state(FitChoice.choice)
     else:
-        await bot.send_message(chat_id=user_id, text=FINISH_FIT)
+        await bot.send_message(chat_id=user_id, text=FINISH_FIT, reply_markup=await back_to_search())
 
+@router.message(FitChoice.choice)
+async def fit_choice_handler(message: Message, state: FSMContext):
+    await message.delete()
+
+    data = await state.get_data()
+    index = data.get("index", 0)
+
+    if choice := message.text:
+
+        if profile_msg := data.get("profile_msg"):
+            await message.bot.delete_message(chat_id=message.from_user.id, message_id=profile_msg)
+            
+        if action_msg := data.get("action_msg"):
+            await message.bot.delete_message(chat_id=message.from_user.id, message_id=action_msg)
+
+        if choice == NEXT:
+            await state.update_data(index=index + 1)
+            await show_profile(bot=message.bot, user_id=message.from_user.id, state=state)
+
+        elif choice == BACK:
+            await state.update_data(index=index - 1 if index > 0 else 0)
+            await show_profile(bot=message.bot, user_id=message.from_user.id, state=state)
+
+
+        elif choice == QUIT:
+            await message.answer("Подбор анкет отменен", reply_markup=ReplyKeyboardRemove())
+            await state.clear()
+
+        else:
+            await message.answer("Выберите одно из трех действий:", reply_markup=await fit_action())
+            return
 
 
             

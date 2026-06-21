@@ -1,5 +1,5 @@
-from aiogram import Router
-from aiogram.types import Message
+from aiogram import Router, F, Bot
+from aiogram.types import Message, CallbackQuery
 from aiogram.filters import CommandStart, Command
 from .keyboards import *
 from aiogram.fsm.context import FSMContext
@@ -39,6 +39,15 @@ async def profiles_cmd(message: Message, state: FSMContext = None):
 
 @router.message(Command("fit"))
 async def fit_cmd(message: Message, state: FSMContext = None):
+    await fit(bot=message.bot, user_id=message.from_user.id, state=state)
+
+@router.callback_query(F.data == "fit")
+async def fit_callback(callback: CallbackQuery, state: FSMContext = None):
+    await callback.answer()
+    await callback.message.delete()
+    await fit(bot=callback.bot, user_id=callback.from_user.id, state=state)
+
+async def fit(bot: Bot, user_id: int, state: FSMContext = None):
     if state:
         await state.clear()
-    await message.answer("Выбери тип анкет:", reply_markup=await fit_profiles_kb())
+    await bot.send_message(chat_id=user_id, text="Выбери тип анкет:", reply_markup=await fit_profiles_kb())

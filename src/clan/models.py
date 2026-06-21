@@ -1,7 +1,10 @@
-from sqlalchemy.orm import Mapped, mapped_column
+from __future__ import annotations
+
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from src.database import Base
 from sqlalchemy import BigInteger
 from datetime import datetime
+
 
 class Clan(Base):
     __tablename__ = "clans"
@@ -21,3 +24,5 @@ class Clan(Base):
 
     is_published: Mapped[bool] = mapped_column(default=False, nullable=True)
     expiration_date: Mapped[datetime] = mapped_column(nullable=True)
+
+    reviews = relationship("Review", back_populates="clan")

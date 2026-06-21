@@ -17,3 +17,8 @@ class SeacrhFilter(StatesGroup):
 
 class FitChoice(StatesGroup):
     choice = State()
+
+
+class ReviewStates(StatesGroup):
+    score = State()
+    text = State()

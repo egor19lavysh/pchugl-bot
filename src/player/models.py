@@ -1,8 +1,12 @@
+from __future__ import annotations
+
+import src.fit.models  # noqa: F401
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from src.database import Base
 from sqlalchemy import Integer, Date, ForeignKey, BigInteger, String
 from sqlalchemy.dialects.postgresql import ARRAY
 from datetime import datetime
+
 
 class Player(Base):
     __tablename__ = "players"
@@ -22,3 +26,5 @@ class Player(Base):
 
     is_published: Mapped[bool] = mapped_column(default=False, nullable=True)
     expiration_date: Mapped[datetime] = mapped_column(nullable=True)
+
+    reviews = relationship("Review", back_populates="player")
