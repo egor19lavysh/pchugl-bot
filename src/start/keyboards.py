@@ -17,7 +17,7 @@ async def profiles_kb() -> InlineKeyboardMarkup:
 
 async def fit_profiles_kb() -> InlineKeyboardMarkup:
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="🎮 Анкеты игрока", callback_data="fit_player")],
-        [InlineKeyboardButton(text="🛡 Анкеты кланов", callback_data="fit_clan")]
+        [InlineKeyboardButton(text="🔎 Смотреть игроков", callback_data="fit_player")],
+        [InlineKeyboardButton(text="🛡 Смотреть кланы", callback_data="fit_clan")]
     ])
     return keyboard

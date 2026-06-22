@@ -11,7 +11,7 @@ from datetime import datetime
 class Player(Base):
     __tablename__ = "players"
 
-    id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
     user_id: Mapped[int] = mapped_column(BigInteger)
     title: Mapped[str]
     nickname: Mapped[str]

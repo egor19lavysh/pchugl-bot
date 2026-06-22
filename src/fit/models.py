@@ -9,7 +9,7 @@ from sqlalchemy import BigInteger, ForeignKey
 class Review(Base):
     __tablename__ = "reviews"
 
-    id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
+    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
     score: Mapped[int]
     text: Mapped[str]
     reviewer: Mapped[str] = mapped_column(nullable=True, default=None)
