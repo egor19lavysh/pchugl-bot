@@ -60,10 +60,18 @@ class PlayerRepository:
 
             result = await session.execute(stmt)
             return result.scalars().all()
+        
+    async def get_all_players(self) -> list[Player]:
+        """
+        Получает вообще все анкеты пользователей
+        """
+        async with get_async_session() as session:
+            result = await session.execute(select(Player))
+            return result.scalars().all()
 
     async def get_players(self, user_id: int) -> list[Player]:
         """
-        Получает всех игроков из базы данных
+        Получает всех игроков из базы данных кроме игрока с user_id
         """
         async with get_async_session() as session:
             result = await session.execute(select(Player).where(Player.user_id != user_id))

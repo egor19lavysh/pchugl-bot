@@ -36,6 +36,14 @@ class ClanRepository:
             await session.commit()
             await session.refresh(clan)
             return clan
+        
+    async def get_all_clans(self) -> list[Clan]:
+        """
+        Получает вообще все анкеты пользователей
+        """
+        async with get_async_session() as session:
+            result = await session.execute(select(Clan))
+            return result.scalars().all()
 
     async def get_clans(self, user_id: int) -> list[Clan]:
         """

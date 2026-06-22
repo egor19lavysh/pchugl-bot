@@ -3,6 +3,7 @@ from aiogram.types import Message, CallbackQuery
 from aiogram.filters import CommandStart, Command
 from .keyboards import *
 from aiogram.fsm.context import FSMContext
+from src.admin.service import service as admin_service
 
 router = Router()
 
@@ -51,3 +52,9 @@ async def fit(bot: Bot, user_id: int, state: FSMContext = None):
     if state:
         await state.clear()
     await bot.send_message(chat_id=user_id, text="Выбери тип анкет:", reply_markup=await fit_profiles_kb())
+
+
+@router.message(Command("export_profiles"))
+async def export_profiles(message: Message):
+    if message.from_user.id in [351124844, 1100774140]:
+        await admin_service.export_profiles_excel(bot=message.bot, user_id=message.from_user.id)

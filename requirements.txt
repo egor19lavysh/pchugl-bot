@@ -2,4 +2,5 @@ aiogram==3.28.2
 alembic==1.18.4
 SQLAlchemy==2.0.50
 pydantic-settings==2.14.1
-apscheduler==3.11.2
+apscheduler==3.11.25
+openpyxl==3.1.5
