@@ -32,7 +32,7 @@ async def player_lang_handler(callback: CallbackQuery, state: FSMContext):
 
     if data == BACK:
         await callback.message.answer(SEACH_TYPE, reply_markup=await search_type())
-        await state.clear()
+        await state.set_state(None)
         return
 
     if data not in ["RU", "UA", "EN", "Другое", SKIP]:
@@ -60,6 +60,7 @@ async def player_hydra_handler(callback: CallbackQuery, state: FSMContext):
 
     if data == BACK:
         await callback.message.answer(LANGUAGE, reply_markup=await player_language_kb(skip=True))
+        await state.set_state(SeacrhFilter.player_lang)
         return
 
     if data not in "До 1В, 4В, 8В, 12В, 16В, 20В, 24В, От 28В".split(", ") + [SKIP]:
@@ -87,6 +88,7 @@ async def player_himera_handler(callback: CallbackQuery, state: FSMContext):
 
     if data == BACK:
         await callback.message.answer(HYDRA, reply_markup=await player_hydra_kb(skip=True))
+        await state.set_state(SeacrhFilter.player_hydra)
         return
 
     if data not in "До 1В, 4В, 8В, 12В, 16В, 20В, 24В, От 28В".split(", ") + [SKIP]:
@@ -114,6 +116,7 @@ async def player_lkv_handler(callback: CallbackQuery, state: FSMContext):
 
     if data == BACK:
         await callback.message.answer(HIMERA, reply_markup=await player_himera_kb(skip=True))
+        await state.set_state(SeacrhFilter.player_himera)
         return
 
     if data not in "До 100К, 200К, 300К, 400К, 500К, 600К, 700К, От 800К".split(", ") + [SKIP]:
@@ -141,6 +144,7 @@ async def player_sieges_handler(callback: CallbackQuery, state: FSMContext):
 
     if data == BACK:
         await callback.message.answer(LKV, reply_markup=await player_lkv_kb(skip=True))
+        await state.set_state(SeacrhFilter.player_lkv)
         return
 
     if data not in "До 5, 6, 7, 8".split(", ") + [SKIP]:

@@ -5,6 +5,7 @@ from .keyboards import *
 from aiogram.fsm.context import FSMContext
 from src.admin.service import service as admin_service
 
+
 router = Router()
 
 START_TEXT = """
@@ -13,6 +14,7 @@ START_TEXT = """
 🎮 Регистрация: /register
 👤 Мои анкеты: /profiles
 🔎 Найти тиммейта: /fit
+ℹ️ Информация: /info
 
 📢 Опубликовать анкету → 1д (без подписки) / 7д (с подпиской)
 ⭐️ Оценивай игроков и кланы с отзывами
@@ -25,6 +27,16 @@ async def start_command(message: Message, state: FSMContext = None):
     if state:    
         await state.clear()
     await message.answer(START_TEXT)
+
+@router.message(Command("info"))
+async def info_cmd(message: Message, state: FSMContext = None):
+    if state:    
+        await state.clear()
+    await message.answer(START_TEXT)
+
+@router.message(Command("test"))
+async def test(message: Message):
+    await message.answer(str(1/0))
 
 @router.message(Command("register"))
 async def register_cmd(message: Message, state: FSMContext = None):
@@ -58,3 +70,5 @@ async def fit(bot: Bot, user_id: int, state: FSMContext = None):
 async def export_profiles(message: Message):
     if message.from_user.id in [351124844, 1100774140]:
         await admin_service.export_profiles_excel(bot=message.bot, user_id=message.from_user.id)
+
+

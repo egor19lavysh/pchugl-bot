@@ -9,10 +9,11 @@ class Settings(BaseSettings):
     DB_HOST: str
     DB_PORT: str
     DB_DRIVER: str
-
-    @property
-    def DB_URL(self) -> str:
-        return f"postgresql+{self.DB_DRIVER}://{self.DB_USER}:{self.DB_PASSWORD}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
+    DB_URL: str = 'sqlite+aiosqlite:///data/db.sqlite3'
+    
+    #@property
+    #def DB_URL(self) -> str:
+        #return f"postgresql+{self.DB_DRIVER}://{self.DB_USER}:{self.DB_PASSWORD}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
 
     class Config:
         env_file = ".env"

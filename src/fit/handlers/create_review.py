@@ -2,7 +2,7 @@ from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.context import FSMContext
 from aiogram.types import ReplyKeyboardRemove
-from src.fit.states import ReviewStates
+from src.fit.states import ReviewStates, FitChoice
 from src.fit.keyboards import review_control_kb, review_score_kb
 from src.fit.service import service
 from src.fit.handlers.handlers import show_profile
@@ -56,6 +56,8 @@ async def create_review_handler(callback: CallbackQuery, state: FSMContext):
 
     if action_msg := data.get("action_msg"):
         await callback.bot.delete_message(chat_id=callback.from_user.id, message_id=action_msg)
+        await state.update_data(action_msg=None)
+
 
 
     parts = callback.data.split("_")
@@ -123,5 +125,6 @@ async def review_text_handler(message: Message, state: FSMContext):
         return
 
     await message.answer("Отзыв создан.", reply_markup=ReplyKeyboardRemove())
+    await state.set_state(FitChoice.choice)
     await show_profile(bot=message.bot, user_id=message.from_user.id, state=state)
 

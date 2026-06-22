@@ -11,6 +11,7 @@ from src.player.keyboards import (language_kb as player_language_kb,
 from src.clan.keyboards import language_kb as clan_language_kb
 from src.start.handlers import fit_cmd
 from src.fit.service import service
+import random
 
 
 router = Router()
@@ -87,10 +88,11 @@ async def start_fit(bot: Bot, user_id: int, state: FSMContext):
             profiles = await service.filter_clans(user_id=user_id, filters=filters)
             
         if not profiles:
-            await bot.send_message("Анкеты не нашлись...", reply_markup=await back_to_search())
+            await bot.send_message(chat_id=user_id, text="Анкеты не нашлись...", reply_markup=await back_to_search())
             await state.clear()
             return
 
+        random.shuffle(profiles)
         await state.update_data(
             profiles=profiles,
             index=0
@@ -136,7 +138,6 @@ async def show_profile(bot: Bot, user_id: int, state: FSMContext):
 
 @router.message(FitChoice.choice)
 async def fit_choice_handler(message: Message, state: FSMContext):
-    await message.delete()
 
     data = await state.get_data()
     index = data.get("index", 0)
@@ -145,9 +146,11 @@ async def fit_choice_handler(message: Message, state: FSMContext):
 
         if profile_msg := data.get("profile_msg"):
             await message.bot.delete_message(chat_id=message.from_user.id, message_id=profile_msg)
+            await state.update_data(profile_msg=None)
             
         if action_msg := data.get("action_msg"):
             await message.bot.delete_message(chat_id=message.from_user.id, message_id=action_msg)
+            await state.update_data(action_msg=None)
 
         if choice == NEXT:
             await state.update_data(index=index + 1)

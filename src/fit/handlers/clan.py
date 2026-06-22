@@ -32,7 +32,7 @@ async def clan_lang_handler(callback: CallbackQuery, state: FSMContext):
 
     if data == BACK:
         await callback.message.answer(SEACH_TYPE, reply_markup=await search_type())
-        await state.clear()
+        await state.set_state(None)
         return
 
     if data not in ["RU", "UA", "EN", "Другое", SKIP]:
@@ -60,6 +60,7 @@ async def clan_hydra_handler(callback: CallbackQuery, state: FSMContext):
 
     if data == BACK:
         await callback.message.answer(LANGUAGE, reply_markup=await clan_language_kb(skip=True))
+        await state.set_state(SeacrhFilter.clan_lang)
         return
 
     if data not in "До 1В, 4В, 8В, 12В, 16В, 20В, 24В, От 28В".split(", ") + [SKIP]:
@@ -87,6 +88,7 @@ async def clan_himera_handler(callback: CallbackQuery, state: FSMContext):
 
     if data == BACK:
         await callback.message.answer(HYDRA, reply_markup=await clan_hydra_kb(skip=True))
+        await state.set_state(SeacrhFilter.clan_hydra)
         return
 
     if data not in "до 100К, 200К, 300К, 400К, 500К, 600К, 700К, от 800К".split(", ") + [SKIP]:
@@ -114,9 +116,10 @@ async def clan_lkv_handler(callback: CallbackQuery, state: FSMContext):
 
     if data == BACK:
         await callback.message.answer(HIMERA, reply_markup=await clan_himera_kb(skip=True))
+        await state.set_state(SeacrhFilter.clan_himera)
         return
 
-    if data not in "до 5, 6, 7, 8".split(", ") + [SKIP]:
+    if data not in "До 5, 6, 7, 8".split(", ") + [SKIP]:
         await callback.message.answer("Некорректное значение!")
         await callback.message.answer(LKV, reply_markup=await clan_lkv_kb(skip=True))
         return
@@ -141,6 +144,7 @@ async def clan_sieges_handler(callback: CallbackQuery, state: FSMContext):
 
     if data == BACK:
         await callback.message.answer(LKV, reply_markup=await clan_lkv_kb(skip=True))
+        await state.set_state(SeacrhFilter.clan_lkv)
         return
 
     if data not in "До 5, 6, 7, 8".split(", ") + [SKIP]:

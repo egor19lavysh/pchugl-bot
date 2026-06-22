@@ -295,7 +295,7 @@ async def requirements_lkv_handler(callback: CallbackQuery, state: FSMContext):
             await state.set_state(ClanStates.requirements_himera)
             return
         
-        if data not in "до 5, 6, 7, 8".split(", "):
+        if data not in "До 5, 6, 7, 8".split(", "):
             await callback.message.answer("Некорректное значение!")
             await callback.message.answer(LKV, reply_markup=await lkv_kb())
             return

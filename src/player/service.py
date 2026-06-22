@@ -115,7 +115,7 @@ class PlayerService:
             else:
                 days = 1
                 
-            interval = timedelta(days=days)
+            interval = timedelta(minutes=days)
             expiration_date = datetime.now() + interval
 
             try:

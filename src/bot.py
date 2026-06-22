@@ -12,9 +12,21 @@ from src.fit.handlers import routers as fit_routers
 from src.clan.handlers import routers as clan_routers
 from src.player.service import service as player_service
 from src.clan.service import service as clan_service
+from aiogram.types.error_event import ErrorEvent
+from aiogram.fsm.context import FSMContext
+
+
+logger = logging.getLogger(__name__)
 
 
 dp = Dispatcher()
+
+@dp.error()
+async def error_handler(event: ErrorEvent, state: FSMContext = None):
+    logger.info("Critical error caused by %s", event.exception)
+    if state:
+        await state.clear()
+    await event.update.message.answer("Что-то пошло не так... Попробуйте заново")
 
 
 async def main() -> None:
