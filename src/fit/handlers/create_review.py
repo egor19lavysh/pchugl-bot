@@ -1,9 +1,9 @@
 from aiogram import Router, F
-from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup
+from aiogram.types import Message, CallbackQuery
 from aiogram.fsm.context import FSMContext
 from aiogram.types import ReplyKeyboardRemove
 from src.fit.states import ReviewStates
-from src.fit.keyboards import review_control_kb
+from src.fit.keyboards import review_control_kb, review_score_kb
 from src.fit.service import service
 from src.fit.handlers.handlers import show_profile
 
@@ -19,10 +19,44 @@ async def back_to_profile_handler(callback: CallbackQuery, state: FSMContext):
     await show_profile(bot=callback.bot, user_id=callback.from_user.id, state=state)
 
 
-@router.callback_query(F.data.startswith("review_"))
+@router.callback_query(F.data.startswith("review_score_"))
+async def review_score_callback_handler(callback: CallbackQuery, state: FSMContext):
+    await callback.answer()
+    
+    score_part = callback.data.split("_")[-1]
+
+    await callback.message.edit_text(score_part, reply_markup=None)
+
+    try:
+        score = int(score_part)
+    except ValueError:
+        await callback.message.answer("Ошибка оценки. Повторите попытку.", reply_markup=await review_score_kb())
+        return
+
+    if score < 1 or score > 5:
+        await callback.message.answer("Оценка должна быть от 1 до 5.", reply_markup=await review_score_kb())
+        return
+
+    await state.update_data(score=score)
+    await state.set_state(ReviewStates.text)
+
+    await callback.bot.send_message(
+        chat_id=callback.from_user.id,
+        text="Напишите текст отзыва:",
+        reply_markup=await review_control_kb()
+    )
+
+
+@router.callback_query(F.data.regexp(r"^review_(player|clan)_\d+$"))
 async def create_review_handler(callback: CallbackQuery, state: FSMContext):
     await callback.answer()
     await callback.message.delete()
+
+    data = await state.get_data()
+
+    if action_msg := data.get("action_msg"):
+        await callback.bot.delete_message(chat_id=callback.from_user.id, message_id=action_msg)
+
 
     parts = callback.data.split("_")
     if len(parts) != 3:
@@ -41,8 +75,8 @@ async def create_review_handler(callback: CallbackQuery, state: FSMContext):
 
     await callback.bot.send_message(
         chat_id=callback.from_user.id,
-        text="Укажите оценку от 1 до 5:",
-        reply_markup=await review_control_kb()
+        text="Выберите оценку:",
+        reply_markup=await review_score_kb()
     )
 
 
@@ -82,7 +116,7 @@ async def review_text_handler(message: Message, state: FSMContext):
         await message.answer("Ошибка состояния. Попробуйте заново.", reply_markup=ReplyKeyboardRemove())
         return
 
-    review = await service.create_review(entity=entity, profile_id=profile_id, score=score, text=text)
+    review = await service.create_review(entity=entity, profile_id=profile_id, reviewer=message.from_user.username, score=score, text=text)
     if review is None:
         await state.clear()
         await message.answer("Не удалось создать отзыв. Анкета не найдена.", reply_markup=ReplyKeyboardRemove())

@@ -41,7 +41,6 @@ class PlayerRepository:
         """
         Получает список игроков, отфильтрованных по набору полей и значений.
         """
-        print(filters)
         if not filters:
             return await self.get_players(user_id=user_id)
 

@@ -4,13 +4,16 @@ from aiogram.fsm.context import FSMContext
 from src.fit.service import service
 from src.fit.keyboards import review_pagination_kb, review_control_kb
 from src.fit.handlers.handlers import show_profile
+from src.fit.models import Review
+
 
 router = Router()
 
 
-def format_review_text(review) -> str:
+def format_review_text(review: Review) -> str:
     return (
-        f"*Оценка*: {review.score}\n"
+        f'*Игрок*: {"@" + review.reviewer if review.reviewer else "не указан"}\n'
+        f"*Оценка*: {review.score}⭐️\n"
         f"*Текст*: {review.text}\n"
         f"*Дата*: {review.created_at.strftime('%Y-%m-%d %H:%M')}"
     )
@@ -61,6 +64,12 @@ async def review_back_handler(callback: CallbackQuery, state: FSMContext):
 async def reviews_start_handler(callback: CallbackQuery, state: FSMContext):
     await callback.answer()
     await callback.message.delete()
+
+    data = await state.get_data()
+
+    if action_msg := data.get("action_msg"):
+        await callback.bot.delete_message(chat_id=callback.from_user.id, message_id=action_msg)
+
 
     parts = callback.data.split("_")
     if len(parts) != 3:

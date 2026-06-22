@@ -52,7 +52,7 @@ async def search_handler(callback: CallbackQuery, state: FSMContext):
             await start_fit(bot=callback.bot, user_id=callback.from_user.id, state=state)
         elif search == "filter":
             if entity == "player":
-                await callback.message.answer(LANGUAGE, reply_markup=await player_language_kb())
+                await callback.message.answer(LANGUAGE, reply_markup=await player_language_kb(skip=True))
                 await state.set_state(SeacrhFilter.player_lang)
             elif entity == "clan":
                 await callback.message.answer(LANGUAGE, reply_markup=await clan_language_kb())

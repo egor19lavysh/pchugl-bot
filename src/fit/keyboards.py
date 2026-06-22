@@ -28,6 +28,17 @@ async def review_control_kb() -> InlineKeyboardMarkup:
         [InlineKeyboardButton(text="Вернуться к анкете", callback_data="review_back")]
     ])
 
+async def review_score_kb() -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(inline_keyboard=[
+            [InlineKeyboardButton(text="1⭐️", callback_data="review_score_1")],
+            [InlineKeyboardButton(text="2⭐️", callback_data="review_score_2")],
+            [InlineKeyboardButton(text="3⭐️", callback_data="review_score_3")],
+            [InlineKeyboardButton(text="4⭐️", callback_data="review_score_4")],
+            [InlineKeyboardButton(text="5⭐️", callback_data="review_score_5")],
+        
+        [InlineKeyboardButton(text="Вернуться к анкете", callback_data="review_back")],
+    ])
+
 async def review_pagination_kb(entity: str, profile_id: int, index: int, total: int) -> InlineKeyboardMarkup:
     buttons = []
     row = []

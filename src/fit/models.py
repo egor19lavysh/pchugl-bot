@@ -12,6 +12,7 @@ class Review(Base):
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
     score: Mapped[int]
     text: Mapped[str]
+    reviewer: Mapped[str] = mapped_column(nullable=True, default=None)
     created_at: Mapped[datetime] = mapped_column(default=datetime.now)
 
     player_id: Mapped[int | None] = mapped_column(ForeignKey("players.id"), nullable=True)

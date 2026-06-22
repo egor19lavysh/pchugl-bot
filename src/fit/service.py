@@ -21,13 +21,42 @@ class FitService:
     
     async def get_info(self, profile: Player | Clan) -> str:
         if isinstance(profile, Player):
-            return await player_service.get_player_info(player_id=profile.id)
+            info = await player_service.get_player_info(player_id=profile.id) or ""
+            # attach average rating if exists
+            avg, count = await self.get_average_rating(entity="player", profile_id=profile.id)
+            if avg is not None:
+                info = f"{info}\n*Рейтинг*: {avg:.2f}⭐️ ({count} отзывов)"
+            return info
         elif isinstance(profile, Clan):
-            return await clan_service.get_clan_info(clan_id=profile.id)
+            info = await clan_service.get_clan_info(clan_id=profile.id) or ""
+            avg, count = await self.get_average_rating(entity="clan", profile_id=profile.id)
+            if avg is not None:
+                info = f"{info}\n*Рейтинг*: {avg:.2f}⭐️ ({count} отзывов)"
+            return info
         else:
             raise Exception("Неправильный тип данных")
 
-    async def create_review(self, entity: str, profile_id: int, score: int, text: str) -> Review | None:
+    async def get_average_rating(self, entity: str, profile_id: int) -> tuple[float | None, int]:
+        """
+        Возвращает кортеж (average, count) для всех отзывов по анкете.
+        Если отзывов нет, возвращает (None, 0).
+        """
+        reviews = await self.get_reviews(entity=entity, profile_id=profile_id)
+        if not reviews:
+            return None, 0
+        total = 0
+        count = 0
+        for r in reviews:
+            try:
+                total += int(r.score)
+                count += 1
+            except Exception:
+                continue
+        if count == 0:
+            return None, 0
+        return total / count, count
+
+    async def create_review(self, entity: str, profile_id: int, score: int, text: str,  reviewer: str = None) -> Review | None:
         if entity == "player":
             profile = await player_service.get_player_by_id(player_id=profile_id)
         elif entity == "clan":
@@ -40,6 +69,7 @@ class FitService:
 
         async with get_async_session() as session:
             review = Review(
+                reviewer=reviewer,
                 score=score,
                 text=text,
                 player_id=profile_id if entity == "player" else None,
