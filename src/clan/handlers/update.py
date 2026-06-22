@@ -208,7 +208,7 @@ async def level_handler(callback: CallbackQuery, state: FSMContext):
             return
         
         
-        if data not in "до 20, 21, 22, 23, 24, 25, 26, от 27".split(", "):
+        if data not in "До 20, 21, 22, 23, 24, 25, 26, От 27".split(", "):
             await callback.message.answer("Некорректное значение!")
             await callback.message.answer(LEVEL, reply_markup=await level_kb())
             return

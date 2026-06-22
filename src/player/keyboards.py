@@ -81,7 +81,7 @@ async def sieges_kb(skip: bool = False) -> InlineKeyboardMarkup:
         [InlineKeyboardButton(text="Назад", callback_data="sieges_Назад")]])
     
     if skip:
-        kb.inline_keyboard.insert(4, [InlineKeyboardButton(text="Пропустить", callback_data="lang_Пропустить")])
+        kb.inline_keyboard.insert(2, [InlineKeyboardButton(text="Пропустить", callback_data="lang_Пропустить")])
     
     return kb
 

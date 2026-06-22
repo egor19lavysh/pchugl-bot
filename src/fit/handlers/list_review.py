@@ -66,6 +66,7 @@ async def reviews_start_handler(callback: CallbackQuery, state: FSMContext):
     await callback.message.delete()
 
     data = await state.get_data()
+    await state.set_state(None)
 
     if action_msg := data.get("action_msg"):
         await callback.bot.delete_message(chat_id=callback.from_user.id, message_id=action_msg)

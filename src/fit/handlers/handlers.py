@@ -56,7 +56,7 @@ async def search_handler(callback: CallbackQuery, state: FSMContext):
                 await callback.message.answer(LANGUAGE, reply_markup=await player_language_kb(skip=True))
                 await state.set_state(SeacrhFilter.player_lang)
             elif entity == "clan":
-                await callback.message.answer(LANGUAGE, reply_markup=await clan_language_kb())
+                await callback.message.answer(LANGUAGE, reply_markup=await clan_language_kb(skip=True))
                 await state.set_state(SeacrhFilter.clan_lang)
 
     else:

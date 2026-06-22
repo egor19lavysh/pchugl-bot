@@ -35,14 +35,14 @@ async def language_kb(skip: bool = False) -> InlineKeyboardMarkup:
 
 async def level_kb() -> InlineKeyboardMarkup:
     kb = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="до 20", callback_data="level_до 20"), 
+        [InlineKeyboardButton(text="До 20", callback_data="level_До 20"), 
          InlineKeyboardButton(text="21", callback_data="level_21")],
         [InlineKeyboardButton(text="22", callback_data="level_22"), 
          InlineKeyboardButton(text="23", callback_data="level_23")],
         [InlineKeyboardButton(text="24", callback_data="level_24"), 
          InlineKeyboardButton(text="25", callback_data="level_25")],
         [InlineKeyboardButton(text="26", callback_data="level_26"), 
-         InlineKeyboardButton(text="от 27", callback_data="level_от 27")],
+         InlineKeyboardButton(text="От 27", callback_data="level_От 27")],
         [InlineKeyboardButton(text="Назад", callback_data="level_Назад")],
 
     ])
@@ -72,11 +72,11 @@ async def hydra_kb(skip: bool = False) -> InlineKeyboardMarkup:
 async def himera_kb(skip: bool = False) -> InlineKeyboardMarkup:
     kb = InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text="До 100К", callback_data="himera_До 100К"), 
-         InlineKeyboardButton(text="200K", callback_data="himera_200К")],
+         InlineKeyboardButton(text="200К", callback_data="himera_200К")],
         [InlineKeyboardButton(text="300К", callback_data="himera_300К"), 
-         InlineKeyboardButton(text="400K", callback_data="himera_400К")],
+         InlineKeyboardButton(text="400К", callback_data="himera_400К")],
         [InlineKeyboardButton(text="500К", callback_data="himera_500К"), 
-         InlineKeyboardButton(text="600K", callback_data="himera_600К")],
+         InlineKeyboardButton(text="600К", callback_data="himera_600К")],
         [InlineKeyboardButton(text="700К", callback_data="himera_700К"), 
          InlineKeyboardButton(text="От 800К", callback_data="himera_От 800К")],
         [InlineKeyboardButton(text="Назад", callback_data="himera_Назад")],
@@ -98,7 +98,7 @@ async def lkv_kb(skip: bool = False) -> InlineKeyboardMarkup:
         [InlineKeyboardButton(text="Назад", callback_data="lkv_Назад")]])
     
     if skip:
-        kb.inline_keyboard.insert(4, [InlineKeyboardButton(text="Пропустить", callback_data="lang_Пропустить")])
+        kb.inline_keyboard.insert(2, [InlineKeyboardButton(text="Пропустить", callback_data="lang_Пропустить")])
     
     
     return kb
@@ -110,7 +110,7 @@ async def sieges_kb(skip: bool = False) -> InlineKeyboardMarkup:
         [InlineKeyboardButton(text="Назад", callback_data="sieges_Назад")]])
     
     if skip:
-        kb.inline_keyboard.insert(4, [InlineKeyboardButton(text="Пропустить", callback_data="lang_Пропустить")])
+        kb.inline_keyboard.insert(2, [InlineKeyboardButton(text="Пропустить", callback_data="lang_Пропустить")])
     
 
     return kb

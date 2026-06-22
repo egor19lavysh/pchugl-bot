@@ -91,7 +91,7 @@ async def clan_himera_handler(callback: CallbackQuery, state: FSMContext):
         await state.set_state(SeacrhFilter.clan_hydra)
         return
 
-    if data not in "до 100К, 200К, 300К, 400К, 500К, 600К, 700К, от 800К".split(", ") + [SKIP]:
+    if data not in "До 100К, 200К, 300К, 400К, 500К, 600К, 700К, От 800К".split(", ") + [SKIP]:
         await callback.message.answer("Некорректное значение!")
         await callback.message.answer(HIMERA, reply_markup=await clan_himera_kb(skip=True))
         return

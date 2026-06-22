@@ -144,7 +144,7 @@ async def level_handler(callback: CallbackQuery, state: FSMContext):
             await state.set_state(ClanStates.tg_tag)
             return
 
-        if level not in "до 20, 21, 22, 23, 24, 25, 26, от 27".split(", "):
+        if level not in "До 20, 21, 22, 23, 24, 25, 26, От 27".split(", "):
             await callback.message.answer("Некорректное значение!")
             await callback.message.answer(LEVEL, reply_markup=await level_kb())
             return
@@ -266,7 +266,7 @@ async def requirements_himera_handler(callback: CallbackQuery, state: FSMContext
             await state.set_state(ClanStates.requirements_hydra)
             return
         
-        if data not in "до 100К, 200К, 300К, 400К, 500К, 600К, 700К, от 800К".split(", "):
+        if data not in "До 100К, 200К, 300К, 400К, 500К, 600К, 700К, От 800К".split(", "):
             await callback.message.answer("Некорректное значение!")
             await callback.message.answer(HIMERA, reply_markup=await himera_kb())
             return
