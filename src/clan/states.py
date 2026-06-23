@@ -12,6 +12,8 @@ class ClanStates(StatesGroup):
     requirements_hydra = State()
     requirements_himera = State()
     requirements_lkv = State()
+    clan_tag = State()
+    final = State()
 
 class UpdateClanStates(StatesGroup):
     choice = State()
@@ -25,6 +27,8 @@ class UpdateClanStates(StatesGroup):
     requirements_hydra = State()
     requirements_himera = State()
     requirements_lkv = State()
+    clan_tag = State()
+
 
 class DeleteClanStates(StatesGroup):
     confirm = State()

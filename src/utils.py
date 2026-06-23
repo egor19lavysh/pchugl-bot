@@ -30,6 +30,7 @@ PLAYER_TEMPLATE = """
 CLAN_TEMPLATE = """
 *Название клана*: {name}
 *Тг юзернейм*: {tg_tag}
+*Тег клана*: {clan_tag}
 *Уровень*: {level}
 *Язык*: {language}
 *Гидра*: {hydra}

@@ -13,10 +13,11 @@ class ClanRepository:
                             photo: str | None,
                             level: int,
                             language: str,
-                            sieges_league: str,
-                            requirements_hydra: str,
-                            requirements_himera: str,
-                            requirements_lkv: str) -> Clan:
+                            sieges_league: int,
+                            requirements_hydra: int,
+                            requirements_himera: int,
+                            requirements_lkv: int,
+                            clan_tag: str | None) -> Clan:
         async with get_async_session() as session:
             """
             Создает нового игрока в базе данных и возвращает его.
@@ -31,7 +32,8 @@ class ClanRepository:
                             sieges_league=sieges_league, 
                             requirements_hydra=requirements_hydra, 
                             requirements_himera=requirements_himera, 
-                            requirements_lkv=requirements_lkv)
+                            requirements_lkv=requirements_lkv,
+                            clan_tag=clan_tag)
             session.add(clan)
             await session.commit()
             await session.refresh(clan)

@@ -421,6 +421,9 @@ async def final_handler(callback: CallbackQuery, state: FSMContext, scheduler: A
 
     data = callback.data.split("_")[-1]
 
+    await callback.message.answer("Сохраняем анкету...", reply_markup=ReplyKeyboardRemove())
+
+
     if data == "1":
         await save_player(bot=callback.bot, state=state)
     elif data == "2":

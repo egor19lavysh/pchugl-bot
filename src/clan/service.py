@@ -81,6 +81,7 @@ class ClanService:
             return CLAN_TEMPLATE.format(
                 name=clan.name,
                 tg_tag= '@' + clan.tg_tag if clan.tg_tag else "не указан",
+                clan_tag=clan.clan_tag if clan.clan_tag else "не указан",
                 level=clan.level,
                 language=clan.language,
                 hydra=clan.requirements_hydra,

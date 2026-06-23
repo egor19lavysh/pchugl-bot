@@ -51,68 +51,61 @@ async def level_kb() -> InlineKeyboardMarkup:
 
 async def hydra_kb(skip: bool = False) -> InlineKeyboardMarkup:
     kb = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="До 1В", callback_data="hydra_До 1В"),
-          InlineKeyboardButton(text="4В", callback_data="hydra_4В")],
-        [InlineKeyboardButton(text="8В", callback_data="hydra_8В"), 
-         InlineKeyboardButton(text="12В", callback_data="hydra_12В")],
-        [InlineKeyboardButton(text="16В", callback_data="hydra_16В"), 
-         InlineKeyboardButton(text="20В", callback_data="hydra_20В")],
-        [InlineKeyboardButton(text="24В", callback_data="hydra_24В"), 
-         InlineKeyboardButton(text="От 28В", callback_data="hydra_От 28В")],
+        [InlineKeyboardButton(text="До 1В", callback_data="hydra_1"), InlineKeyboardButton(text="От 4В", callback_data="hydra_4")],
+        [InlineKeyboardButton(text="От 8В", callback_data="hydra_8"), InlineKeyboardButton(text="От 12В", callback_data="hydra_12")],
+        [InlineKeyboardButton(text="От 16В", callback_data="hydra_16"), InlineKeyboardButton(text="От 20В", callback_data="hydra_20")],
+        [InlineKeyboardButton(text="От 24В", callback_data="hydra_24"), InlineKeyboardButton(text="От 28В", callback_data="hydra_28")],
         [InlineKeyboardButton(text="Назад", callback_data="hydra_Назад")],
 
     ])
 
     if skip:
         kb.inline_keyboard.insert(4, [InlineKeyboardButton(text="Пропустить", callback_data="lang_Пропустить")])
-    
+
 
     return kb
 
 async def himera_kb(skip: bool = False) -> InlineKeyboardMarkup:
     kb = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="До 100К", callback_data="himera_До 100К"), 
-         InlineKeyboardButton(text="200К", callback_data="himera_200К")],
-        [InlineKeyboardButton(text="300К", callback_data="himera_300К"), 
-         InlineKeyboardButton(text="400К", callback_data="himera_400К")],
-        [InlineKeyboardButton(text="500К", callback_data="himera_500К"), 
-         InlineKeyboardButton(text="600К", callback_data="himera_600К")],
-        [InlineKeyboardButton(text="700К", callback_data="himera_700К"), 
-         InlineKeyboardButton(text="От 800К", callback_data="himera_От 800К")],
+        [InlineKeyboardButton(text="До 1В", callback_data="himera_1"), InlineKeyboardButton(text="От 4В", callback_data="himera_4")],
+        [InlineKeyboardButton(text="От 8В", callback_data="himera_8"), InlineKeyboardButton(text="От 12В", callback_data="himera_12")],
+        [InlineKeyboardButton(text="От 16В", callback_data="himera_16"), InlineKeyboardButton(text="От 20В", callback_data="himera_20")],
+        [InlineKeyboardButton(text="От 24В", callback_data="himera_24"), InlineKeyboardButton(text="От 28В", callback_data="himera_28")],
         [InlineKeyboardButton(text="Назад", callback_data="himera_Назад")],
 
     ])
 
     if skip:
         kb.inline_keyboard.insert(4, [InlineKeyboardButton(text="Пропустить", callback_data="lang_Пропустить")])
-    
+
 
     return kb
 
 async def lkv_kb(skip: bool = False) -> InlineKeyboardMarkup:
     kb = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="До 5", callback_data="lkv_До 5"), 
-         InlineKeyboardButton(text="6", callback_data="lkv_6")],
-        [InlineKeyboardButton(text="7", callback_data="lkv_7"), 
-         InlineKeyboardButton(text="8", callback_data="lkv_8")],
-        [InlineKeyboardButton(text="Назад", callback_data="lkv_Назад")]])
-    
+        [InlineKeyboardButton(text="До 100К", callback_data="lkv_100"), InlineKeyboardButton(text="От 200K", callback_data="lkv_200")],
+        [InlineKeyboardButton(text="От 300К", callback_data="lkv_300"), InlineKeyboardButton(text="От 400K", callback_data="lkv_400")],
+        [InlineKeyboardButton(text="От 500К", callback_data="lkv_500"), InlineKeyboardButton(text="От 600K", callback_data="lkv_600")],
+        [InlineKeyboardButton(text="От 700К", callback_data="lkv_700"), InlineKeyboardButton(text="От 800К", callback_data="lkv_800")],
+        [InlineKeyboardButton(text="Назад", callback_data="lkv_Назад")],
+
+    ])
+
     if skip:
-        kb.inline_keyboard.insert(2, [InlineKeyboardButton(text="Пропустить", callback_data="lang_Пропустить")])
-    
-    
+        kb.inline_keyboard.insert(4, [InlineKeyboardButton(text="Пропустить", callback_data="lang_Пропустить")])
+
+
     return kb
 
 async def sieges_kb(skip: bool = False) -> InlineKeyboardMarkup:
     kb = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="До 5", callback_data="sieges_До 5"), InlineKeyboardButton(text="6", callback_data="sieges_6")],
-        [InlineKeyboardButton(text="7", callback_data="sieges_7"), InlineKeyboardButton(text="8", callback_data="sieges_8")],
+        [InlineKeyboardButton(text="До 5", callback_data="sieges_5"), InlineKeyboardButton(text="От 6", callback_data="sieges_6")],
+        [InlineKeyboardButton(text="От 7", callback_data="sieges_7"), InlineKeyboardButton(text="8", callback_data="sieges_8")],
         [InlineKeyboardButton(text="Назад", callback_data="sieges_Назад")]])
     
     if skip:
         kb.inline_keyboard.insert(2, [InlineKeyboardButton(text="Пропустить", callback_data="lang_Пропустить")])
     
-
     return kb
 
 async def back_kb() -> ReplyKeyboardMarkup:
@@ -187,6 +180,7 @@ hydra = "Гидра"
 himera = "Химера"
 lkv = "ЛКВ"
 sieges = "Осады"
+clan_tag = "Тег клана"
 async def get_clan_fields_for_update() -> InlineKeyboardMarkup:
     kb = InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text=title, callback_data="patch_clan_field_" + title)],
@@ -199,6 +193,7 @@ async def get_clan_fields_for_update() -> InlineKeyboardMarkup:
         [InlineKeyboardButton(text=himera, callback_data="patch_clan_field_" + himera)],
         [InlineKeyboardButton(text=lkv, callback_data="patch_clan_field_" + lkv)],
         [InlineKeyboardButton(text=sieges, callback_data="patch_clan_field_" + sieges)],
+        [InlineKeyboardButton(text=clan_tag, callback_data="patch_clan_field_" + clan_tag)],
         [InlineKeyboardButton(text="Назад", callback_data="patch_clan_field_Назад")],
     ])
 
@@ -212,3 +207,9 @@ async def publish_again(clan_id: int) -> InlineKeyboardMarkup:
     )
 
     return kb
+
+async def final_action_kb() -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="Сохранить анкету", callback_data="final_1")],
+        [InlineKeyboardButton(text="Сохранить и опубликовать анкету", callback_data="final_2")]
+    ])

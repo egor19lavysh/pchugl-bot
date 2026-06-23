@@ -18,7 +18,6 @@ TITLE = "***{title}***\n"
 @router.callback_query(F.data == "player")
 async def user_players_handler(callback: CallbackQuery):
     await callback.answer()
-    # try:
     await callback.message.delete()
 
     if players := await service.get_player(user_id=callback.from_user.id):
@@ -26,25 +25,15 @@ async def user_players_handler(callback: CallbackQuery):
     else:
         await callback.message.answer(NO_PROFILES)
 
-    # except Exception as e:
-    #     print(e)
-    #     await callback.message.answer(ERROR)
-
 async def user_players_handler_with_bot(bot: Bot, user_id: int):
     """
     Вспомогательная функция, чтобы перенаправлять на все анкеты
     """
 
-    #try:
-
     if players := await service.get_player(user_id=user_id):
          await bot.send_message(chat_id=user_id, text=PROFILES, reply_markup=await get_user_player_profiles(players=players))
     else:
         await bot.send_message(chat_id=user_id, text=NO_PROFILES)
-
-    # except Exception as e:
-    #     print(e)
-    #     await callback.message.answer(ERROR)
 
 @router.callback_query(F.data.startswith("player_"))
 async def player_handler(callback: CallbackQuery):
