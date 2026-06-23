@@ -12,6 +12,8 @@ class PlayerStates(StatesGroup):
     requirements_hydra = State()
     requirements_himera = State()
     requirements_lkv = State()
+    photo = State()
+    final = State()
 
 class UpdatePlayerStates(StatesGroup):
     choice = State()
@@ -25,6 +27,7 @@ class UpdatePlayerStates(StatesGroup):
     requirements_hydra = State()
     requirements_himera = State()
     requirements_lkv = State()
+    photo = State()
 
 class DeletePlayerStates(StatesGroup):
     confirm = State()

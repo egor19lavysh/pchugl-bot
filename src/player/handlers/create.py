@@ -1,6 +1,7 @@
 from aiogram import Router, F, Bot
 from aiogram.types import Message, CallbackQuery, ReplyKeyboardRemove
 from src.player.service import service
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from src.player.states import PlayerStates
 from aiogram.fsm.context import FSMContext
 from src.player.keyboards import *
@@ -14,17 +15,21 @@ TG_TAG = "Введите свой тг юзернейм (без @):"
 LEVEL = "Введите свой уровень (число от 1 до 100):"
 ACCOUNT_STREGTH = "Введите свою силу аккаунта (число от 1 до 100):"
 LANGUAGE = "Укажите язык:"
-HYDRA = "Укажите гидру:"
-HIMERA = "Укажите химеру:"
-LKV = "Укажите ЛКВ:"
-SIEGES = "Укажите осады:"
+PHOTO = "Добавьте фото ваших героев:"
+HYDRA = "Укажите очки на Гидра КВ:"
+HIMERA = "Укажите очки на Химера КВ:"
+LKV = "Укажите очки на ЛКВ:"
+SIEGES = "Укажите лигу в Осадах:"
 REGISTER_LIMIT = "Достигнут лимит регистраций. Вы можете изменить или удалить старые анкеты."
 ERROR = "Произошла ошибка. Попробуйте еще раз."
 NEED_TEXT = "Введите текст!"
 BACK = "Назад"
-SUCCESSFUL_SAVING = "Ваша анкета сохранена. Вы можете ее посмотреть, опубликовать, изменить или удалить с помощью /profiles"
+SUCCESSFUL_SAVING = "Ваша анкета сохранена. Управлять анкетой можно через /profiles"
 SAVING_FAILED = "При сохранении ошибка. Попытайтесь позже."
 DENY_PROFILE = "Создание анкеты отменено."
+NEED_PHOTO = "Отправьте картинку или нажмите пропустить!"
+FINAL_ACTION = "Выберите действие:"
+
 
 @router.callback_query(F.data == "create_player")
 async def create_player_handler(callback: CallbackQuery, state: FSMContext):
@@ -242,7 +247,14 @@ async def requirements_hydra_handler(callback: CallbackQuery, state: FSMContext)
             await state.set_state(PlayerStates.language)
             return
         
-        if data not in "До 1В, 4В, 8В, 12В, 16В, 20В, 24В, От 28В".split(", "):
+        try:
+            data = int(data)
+        except:
+            await callback.message.answer("Некорректное значение!")
+            await callback.message.answer(HYDRA, reply_markup=await hydra_kb())
+            return
+
+        if data not in [1, 4, 8, 12, 16, 20, 24, 28]:
             await callback.message.answer("Некорректное значение!")
             await callback.message.answer(HYDRA, reply_markup=await hydra_kb())
             return
@@ -271,7 +283,14 @@ async def requirements_himera_handler(callback: CallbackQuery, state: FSMContext
             await state.set_state(PlayerStates.requirements_hydra)
             return
         
-        if data not in "До 1В, 4В, 8В, 12В, 16В, 20В, 24В, От 28В".split(", "):
+        try:
+            data = int(data)
+        except:
+            await callback.message.answer("Некорректное значение!")
+            await callback.message.answer(HIMERA, reply_markup=await himera_kb())
+            return
+        
+        if data not in [1, 4, 8, 12, 16, 20, 24, 28]:
             await callback.message.answer("Некорректное значение!")
             await callback.message.answer(HIMERA, reply_markup=await himera_kb())
             return
@@ -300,7 +319,14 @@ async def requirements_lkv_handler(callback: CallbackQuery, state: FSMContext):
             await state.set_state(PlayerStates.requirements_himera)
             return
         
-        if data not in "До 100К, 200К, 300К, 400К, 500К, 600К, 700К, От 800К".split(", "):
+        try:
+            data = int(data)
+        except:
+            await callback.message.answer("Некорректное значение!")
+            await callback.message.answer(LKV, reply_markup=await lkv_kb())
+            return
+        
+        if data not in [100, 200, 300, 400, 500, 600, 700, 800]:
             await callback.message.answer("Некорректное значение!")
             await callback.message.answer(LKV, reply_markup=await lkv_kb())
             return
@@ -329,7 +355,14 @@ async def sieges_league_handler(callback: CallbackQuery, state: FSMContext):
             await state.set_state(PlayerStates.requirements_lkv)
             return
         
-        if data not in "До 5, 6, 7, 8".split(", "):
+        try:
+            data = int(data)
+        except:
+            await callback.message.answer("Некорректное значение!")
+            await callback.message.answer(SIEGES, reply_markup=await sieges_kb())
+            return
+        
+        if data not in [5, 6, 7, 8]:
             await callback.message.answer("Некорректное значение!")
             await callback.message.answer(SIEGES, reply_markup=await sieges_kb())
             return
@@ -338,21 +371,82 @@ async def sieges_league_handler(callback: CallbackQuery, state: FSMContext):
             sieges_league=data
         )
 
-        await callback.message.answer("Сохраняем анкету...", reply_markup=ReplyKeyboardRemove())
-        await state.set_state(None)
-        await save_player(bot=callback.bot, state=state)
+        await callback.message.answer(PHOTO, reply_markup=await photo_kb())
+        await state.set_state(PlayerStates.photo)
             
     except Exception as e:
         print(e)
         await state.clear()
         await callback.message.answer(ERROR)
 
-async def save_player(bot: Bot, state: FSMContext):
+@router.message(PlayerStates.photo)
+async def photo_handler(message: Message, state: FSMContext):
+    try:
+        if message.photo:
+            
+            await state.update_data(
+                    photo=message.photo[-1].file_id
+                )
+
+        elif message.text:
+
+            if message.text == BACK:
+                await message.answer(SIEGES, reply_markup=await sieges_kb())
+                await state.set_state(PlayerStates.sieges_league)
+                return
+            
+            elif message.text == "Пропустить":
+                await state.update_data(
+                    photo=None
+                )
+            else:
+                await message.answer(NEED_PHOTO)
+                return
+        else:
+            await message.answer(NEED_PHOTO)
+            return
+        
+        await message.answer(FINAL_ACTION, reply_markup=await final_action_kb())
+        await state.set_state(PlayerStates.final)
+            
+    except Exception as e:
+        print(e)
+        await state.clear()
+        await message.answer(ERROR)
+
+@router.callback_query(PlayerStates.final)
+async def final_handler(callback: CallbackQuery, state: FSMContext, scheduler: AsyncIOScheduler):
+    await callback.answer()
+    await callback.message.delete()
+
+    data = callback.data.split("_")[-1]
+
+    if data == "1":
+        await save_player(bot=callback.bot, state=state)
+    elif data == "2":
+        player_id = await save_player(bot=callback.bot, state=state)
+        if days := await service.publish_player(apscheduler=scheduler, bot=callback.bot, player_id=player_id):
+            from src.player.handlers.publish import SUCCESS, SUB_INFO
+            days_str = "7 дней" if days == 7 else "1 день"
+            await callback.message.answer(SUCCESS + days_str, reply_markup=await back_to_player(player_id=player_id))
+            
+            if days == 1:
+                await callback.message.answer(SUB_INFO)
+    else:
+        await callback.message.answer("Некорректное значение!")
+        await callback.message.answer(FINAL_ACTION, reply_markup=await final_action_kb())
+        return
+    
+    await state.clear()
+
+
+async def save_player(bot: Bot, state: FSMContext) -> int | None:
     data = await state.get_data()
     try:
-        await service.create_player(**data)
-        await bot.send_message(chat_id=data.get("user_id"), text=SUCCESSFUL_SAVING)
+        player = await service.create_player(**data)
+        if player:
+            await bot.send_message(chat_id=data.get("user_id"), text=SUCCESSFUL_SAVING)
+            return player.id
     except Exception as e:
         print(e)
         await bot.send_message(chat_id=data.get("user_id"), text=SAVING_FAILED)
-    await state.clear()

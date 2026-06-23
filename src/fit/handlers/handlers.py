@@ -19,6 +19,8 @@ router = Router()
 SEACH_TYPE = "Выбери тип поиска:"
 LANGUAGE = "Укажите язык:"
 FINISH_FIT = "Анкеты закончились!"
+NO_PLAYERS = "По вашему запросу игроков не найдено"
+NO_CLANS = "По вашему запросу кланов не найдено"
 BACK = "Назад"
 NEXT = "Дальше"
 QUIT = "Выйти"
@@ -88,7 +90,10 @@ async def start_fit(bot: Bot, user_id: int, state: FSMContext):
             profiles = await service.filter_clans(user_id=user_id, filters=filters)
             
         if not profiles:
-            await bot.send_message(chat_id=user_id, text="Анкеты не нашлись...", reply_markup=await back_to_search())
+            if entity == "player":
+                await bot.send_message(chat_id=user_id, text=NO_PLAYERS, reply_markup=await back_to_search())
+            elif entity == "clan":
+                await bot.send_message(chat_id=user_id, text=NO_CLANS, reply_markup=await back_to_search())
             await state.clear()
             return
 

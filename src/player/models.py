@@ -19,10 +19,11 @@ class Player(Base):
     level: Mapped[int] = mapped_column(default=1)
     account_strength: Mapped[int] = mapped_column(default=1)
     language: Mapped[str]
-    sieges_league: Mapped[str]
-    requirements_hydra: Mapped[str]
-    requirements_himera: Mapped[str]
-    requirements_lkv: Mapped[str]
+    sieges_league: Mapped[int] = mapped_column(nullable=True)
+    requirements_hydra: Mapped[int] = mapped_column(nullable=True)
+    requirements_himera: Mapped[int] = mapped_column(nullable=True)
+    requirements_lkv: Mapped[int] = mapped_column(nullable=True)
+    photo: Mapped[str] = mapped_column(nullable=True, default=None)
 
     is_published: Mapped[bool] = mapped_column(default=False, nullable=True)
     expiration_date: Mapped[datetime] = mapped_column(nullable=True)

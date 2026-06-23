@@ -13,7 +13,8 @@ from src.player.handlers.create import (TITLE, TG_TAG, NICKNAME, LEVEL,
                                         HYDRA,
                                         HIMERA,
                                         LKV,
-                                        SIEGES)
+                                        SIEGES,
+                                        PHOTO)
 
 
 
@@ -29,6 +30,7 @@ BACK = "Назад"
 SUCCESS = "Изменения успешно сохранены"
 FAIL = "Что-то пошло не так... Попробуйте позже"
 DENY_UPDATE = "Изменение поля отменено"
+NEED_PHOTO = "Отправьте картинку или нажмите пропустить!"
 
 @router.callback_query(F.data.startswith("update_player_"))
 async def update_player_handler(callback: CallbackQuery, state: FSMContext):
@@ -87,6 +89,9 @@ async def field_handler(callback: CallbackQuery, state: FSMContext):
         elif field == sieges:
             await callback.message.answer(SIEGES, reply_markup=await sieges_kb())
             await state.set_state(UpdatePlayerStates.sieges_league)
+        elif field == photo:
+            await callback.message.answer(PHOTO, reply_markup=await photo_kb())
+            await state.set_state(UpdatePlayerStates.photo)
         else:
             await callback.message.answer(INCORRECT_VALUE)
             await callback.message.answer(FIELD, reply_markup=await get_player_fields_for_update())
@@ -310,7 +315,14 @@ async def requirements_hydra_handler(callback: CallbackQuery, state: FSMContext)
             await user_players_handler_with_bot(bot=callback.bot, user_id=callback.from_user.id)
             return
         
-        if data not in "До 1В, 4В, 8В, 12В, 16В, 20В, 24В, От 28В".split(", "):
+        try:
+            data = int(data)
+        except:
+            await callback.message.answer("Некорректное значение!")
+            await callback.message.answer(HYDRA, reply_markup=await hydra_kb())
+            return
+
+        if data not in [1, 4, 8, 12, 16, 20, 24, 28]:
             await callback.message.answer("Некорректное значение!")
             await callback.message.answer(HYDRA, reply_markup=await hydra_kb())
             return
@@ -340,7 +352,14 @@ async def requirements_himera_handler(callback: CallbackQuery, state: FSMContext
             await user_players_handler_with_bot(bot=callback.bot, user_id=callback.from_user.id)
             return
         
-        if data not in "До 1В, 4В, 8В, 12В, 16В, 20В, 24В, От 28В".split(", "):
+        try:
+            data = int(data)
+        except:
+            await callback.message.answer("Некорректное значение!")
+            await callback.message.answer(HIMERA, reply_markup=await himera_kb())
+            return
+        
+        if data not in [1, 4, 8, 12, 16, 20, 24, 28]:
             await callback.message.answer("Некорректное значение!")
             await callback.message.answer(HIMERA, reply_markup=await himera_kb())
             return
@@ -363,13 +382,14 @@ async def requirements_lkv_handler(callback: CallbackQuery, state: FSMContext):
         data = callback.data.split("_")[-1]
         await callback.message.edit_text(data, reply_markup=None)
 
-        if data == BACK:
-            await state.clear()
-            await callback.message.answer(DENY_UPDATE, reply_markup=ReplyKeyboardRemove())
-            await user_players_handler_with_bot(bot=callback.bot, user_id=callback.from_user.id)
+        try:
+            data = int(data)
+        except:
+            await callback.message.answer("Некорректное значение!")
+            await callback.message.answer(LKV, reply_markup=await lkv_kb())
             return
         
-        if data not in "До 100К, 200К, 300К, 400К, 500К, 600К, 700К, От 800К".split(", "):
+        if data not in [100, 200, 300, 400, 500, 600, 700, 800]:
             await callback.message.answer("Некорректное значение!")
             await callback.message.answer(LKV, reply_markup=await lkv_kb())
             return
@@ -398,7 +418,14 @@ async def sieges_league_handler(callback: CallbackQuery, state: FSMContext):
             await user_players_handler_with_bot(bot=callback.bot, user_id=callback.from_user.id)
             return
         
-        if data not in "До 5, 6, 7, 8".split(", "):
+        try:
+            data = int(data)
+        except:
+            await callback.message.answer("Некорректное значение!")
+            await callback.message.answer(SIEGES, reply_markup=await sieges_kb())
+            return
+        
+        if data not in [5, 6, 7, 8]:
             await callback.message.answer("Некорректное значение!")
             await callback.message.answer(SIEGES, reply_markup=await sieges_kb())
             return
@@ -413,3 +440,41 @@ async def sieges_league_handler(callback: CallbackQuery, state: FSMContext):
         print(e)
         await state.clear()
         await callback.message.answer(ERROR)
+
+@router.message(UpdatePlayerStates.photo)
+async def photo_handler(message: Message, state: FSMContext):
+    try:
+        if message.photo:
+            
+            await update_field(bot=message.bot,
+                               user_id=message.from_user.id,
+                               state=state,
+                               field="photo",
+                               value=message.photo[-1].file_id)
+
+        elif message.text:
+
+            if message.text == BACK:
+                await state.clear()
+                await message.answer(DENY_UPDATE, reply_markup=ReplyKeyboardRemove())
+                await user_players_handler_with_bot(bot=message.bot, user_id=message.from_user.id)
+                return
+            
+            elif message.text == "Пропустить":
+                await update_field(bot=message.bot,
+                               user_id=message.from_user.id,
+                               state=state,
+                               field="photo",
+                               value=None)
+            else:
+                await message.answer(NEED_PHOTO)
+                return
+        else:
+            await message.answer(NEED_PHOTO)
+            return
+        
+            
+    except Exception as e:
+        print(e)
+        await state.clear()
+        await message.answer(ERROR)

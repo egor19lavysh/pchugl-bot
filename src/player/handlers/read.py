@@ -61,8 +61,19 @@ async def player_handler(callback: CallbackQuery):
     player_info = await service.get_player_info(player_id=player_id)
     player = await service.get_player_by_id(player_id=player_id)
 
+    final_text = TITLE.format(title=player.title) + player_info
+
     if player_info:
-        await callback.message.answer(TITLE.format(title=player.title) + player_info, reply_markup=await get_player_profile_actions(player_id=player_id, is_published=player.is_published))
+        if player.photo:
+            try:
+                await callback.message.answer_photo(photo=player.photo, 
+                                                caption=final_text, 
+                                                reply_markup=await get_player_profile_actions(player_id=player_id, is_published=player.is_published))
+            except Exception as e:
+                print(e)
+                await callback.message.answer(final_text, reply_markup=await get_player_profile_actions(player_id=player_id, is_published=player.is_published))
+        else:
+            await callback.message.answer(final_text, reply_markup=await get_player_profile_actions(player_id=player_id, is_published=player.is_published))
     else:
         await callback.message.answer(NO_PROFILE)
 
