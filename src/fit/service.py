@@ -7,6 +7,10 @@ from src.clan.models import Clan
 from src.fit.models import Review
 from src.database import get_async_session
 from sqlalchemy import select
+from aiogram import Bot
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class FitService:
@@ -18,6 +22,14 @@ class FitService:
     async def filter_clans(self, user_id: int, filters: dict[str, str | int | bool | None]) -> list[Player]:
         result = await clan_repository.get_clans_by_fields(user_id=user_id, filters=filters)
         return result
+    
+    async def get_profile(self, entity: str, profile_id: int) -> Player | Clan | None:
+        if entity == "player":
+            return await player_service.get_player_by_id(player_id=profile_id)
+        elif entity == "clan":
+            return await clan_service.get_clan_by_id(clan_id=profile_id)
+        else:
+            return None
     
     async def get_info(self, profile: Player | Clan) -> str:
         if isinstance(profile, Player):
@@ -57,12 +69,7 @@ class FitService:
         return total / count, count
 
     async def create_review(self, entity: str, profile_id: int, score: int, text: str,  reviewer: str = None) -> Review | None:
-        if entity == "player":
-            profile = await player_service.get_player_by_id(player_id=profile_id)
-        elif entity == "clan":
-            profile = await clan_service.get_clan_by_id(clan_id=profile_id)
-        else:
-            return None
+        profile = await self.get_profile(entity=entity, profile_id=profile_id)
 
         if not profile:
             return None
@@ -91,6 +98,15 @@ class FitService:
 
             result = await session.execute(stmt)
             return result.scalars().all()
+
+    async def notificate_user(self, bot: Bot, profile_id: int, entity: str, msg: str) -> None:
+        try:
+            profile = await self.get_profile(entity=entity, profile_id=profile_id)
+            await bot.send_message(chat_id=profile.user_id, text=msg)
+        except Exception as e:
+            logger.info(f"Бот пытался отправить сообщение пользователю {entity}_{profile_id}, но не смог из-за {e}")
+        
+
 
 
 service = FitService()

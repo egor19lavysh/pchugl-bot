@@ -70,8 +70,26 @@ class ClanRepository:
             stmt = select(Clan)
             for field_name, value in filters.items():
                 column = getattr(Clan, field_name)
-                if value is not None:
-                    stmt = stmt.where(column == value)
+                if value is not None: #Уеб...ские требования заказчика
+                    if field_name in ("requirements_hydra", "requirements_himera"):
+                        if value == 1:
+                            stmt = stmt.where(column == value)
+                        else:
+                            stmt = stmt.where(column >= value)
+                    elif field_name  == "requirements_lkv":
+                        if value == 100:
+                            stmt = stmt.where(column == value)
+                        else:
+                            stmt = stmt.where(column >= value)
+                    elif field_name == "sieges_league":
+                        if value == 5:
+                            stmt = stmt.where(column == value)
+                        else:
+                            stmt = stmt.where(column >= value)
+                    else:
+                        stmt = stmt.where(column == value)
+                    
+
             
             stmt = stmt.where(Clan.user_id != user_id)
             stmt = stmt.where(Clan.is_published == True)

@@ -21,12 +21,12 @@ logger = logging.getLogger(__name__)
 
 dp = Dispatcher()
 
-# @dp.error()
-# async def error_handler(event: ErrorEvent, state: FSMContext = None):
-#     logger.info("Critical error caused by %s", event.exception)
-#     if state:
-#         await state.clear()
-#     await event.update.message.answer("Что-то пошло не так... Попробуйте заново")
+@dp.error()
+async def error_handler(event: ErrorEvent, state: FSMContext = None):
+    logger.info("Critical error caused by %s", event.exception)
+    if state:
+        await state.clear()
+    await event.update.message.answer("Что-то пошло не так... Попробуйте заново")
 
 
 async def main() -> None:

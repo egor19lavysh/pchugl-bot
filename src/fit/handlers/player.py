@@ -62,14 +62,23 @@ async def player_hydra_handler(callback: CallbackQuery, state: FSMContext):
         await callback.message.answer(LANGUAGE, reply_markup=await player_language_kb(skip=True))
         await state.set_state(SeacrhFilter.player_lang)
         return
-
-    if data not in "До 1В, 4В, 8В, 12В, 16В, 20В, 24В, От 28В".split(", ") + [SKIP]:
-        await callback.message.answer("Некорректное значение!")
-        await callback.message.answer(HYDRA, reply_markup=await player_hydra_kb(skip=True))
-        return
     
-    if data == SKIP:
+    elif data == SKIP:
         data = None
+
+    else:
+        try:
+            data = int(data)
+        except:
+            await callback.message.answer("Некорректное значение!")
+            await callback.message.answer(HYDRA, reply_markup=await player_hydra_kb(skip=True))
+            return
+
+        if data not in [1, 4, 8, 12, 16, 20, 24, 28]:
+            await callback.message.answer("Некорректное значение!")
+            await callback.message.answer(HYDRA, reply_markup=await player_hydra_kb(skip=True))
+            return
+    
     
     await state.update_data(
         requirements_hydra=data
@@ -90,14 +99,22 @@ async def player_himera_handler(callback: CallbackQuery, state: FSMContext):
         await callback.message.answer(HYDRA, reply_markup=await player_hydra_kb(skip=True))
         await state.set_state(SeacrhFilter.player_hydra)
         return
-
-    if data not in "До 1В, 4В, 8В, 12В, 16В, 20В, 24В, От 28В".split(", ") + [SKIP]:
-        await callback.message.answer("Некорректное значение!")
-        await callback.message.answer(HIMERA, reply_markup=await player_himera_kb(skip=True))
-        return
     
-    if data == SKIP:
+    elif data == SKIP:
         data = None
+
+    else:
+        try:
+            data = int(data)
+        except:
+            await callback.message.answer("Некорректное значение!")
+            await callback.message.answer(HIMERA, reply_markup=await player_himera_kb(skip=True))
+            return
+            
+        if data not in [1, 4, 8, 12, 16, 20, 24, 28]:
+            await callback.message.answer("Некорректное значение!")
+            await callback.message.answer(HIMERA, reply_markup=await player_himera_kb(skip=True))
+            return
     
     await state.update_data(
         requirements_himera=data
@@ -118,14 +135,22 @@ async def player_lkv_handler(callback: CallbackQuery, state: FSMContext):
         await callback.message.answer(HIMERA, reply_markup=await player_himera_kb(skip=True))
         await state.set_state(SeacrhFilter.player_himera)
         return
-
-    if data not in "До 100К, 200К, 300К, 400К, 500К, 600К, 700К, От 800К".split(", ") + [SKIP]:
-        await callback.message.answer("Некорректное значение!")
-        await callback.message.answer(LKV, reply_markup=await player_lkv_kb(skip=True))
-        return
     
-    if data == SKIP:
+    elif data == SKIP:
         data = None
+
+    else:
+        try:
+            data = int(data)
+        except:
+            await callback.message.answer("Некорректное значение!")
+            await callback.message.answer(LKV, reply_markup=await player_lkv_kb(skip=True))
+            return
+            
+        if data not in [100, 200, 300, 400, 500, 600, 700, 800]:
+            await callback.message.answer("Некорректное значение!")
+            await callback.message.answer(LKV, reply_markup=await player_lkv_kb(skip=True))
+            return
     
     await state.update_data(
         requirements_lkv=data
@@ -146,14 +171,22 @@ async def player_sieges_handler(callback: CallbackQuery, state: FSMContext):
         await callback.message.answer(LKV, reply_markup=await player_lkv_kb(skip=True))
         await state.set_state(SeacrhFilter.player_lkv)
         return
-
-    if data not in "До 5, 6, 7, 8".split(", ") + [SKIP]:
-        await callback.message.answer("Некорректное значение!")
-        await callback.message.answer(SIEGES, reply_markup=await player_sieges_kb(skip=True))
-        return
     
-    if data == SKIP:
+    elif data == SKIP:
         data = None
+
+    else:
+        try:
+            data = int(data)
+        except:
+            await callback.message.answer("Некорректное значение!")
+            await callback.message.answer(SIEGES, reply_markup=await player_sieges_kb(skip=True))
+            return
+            
+        if data not in [5, 6, 7, 8]:
+            await callback.message.answer("Некорректное значение!")
+            await callback.message.answer(SIEGES, reply_markup=await player_sieges_kb(skip=True))
+            return
         
     await state.update_data(
         sieges_league=data

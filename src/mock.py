@@ -4,13 +4,15 @@ from faker import Faker
 from src.clan.repository import repository as clan_repository
 from src.fit.service import service as fit_service
 from src.player.repository import repository as player_repository
+from src.database import get_async_session
+
 
 faker = Faker()
 
 LANGUAGES = ["RU", "UA", "EN", "Другое"]
-REQUIREMENTS_OPTIONS = ["До 1В", "4В", "8В", "12В", "16В", "20В", "24В", "От 28В"]
-LKV_OPTIONS = ["До 100К", "200К", "300К", "400К", "500К", "600К", "700К", "От 800К"]
-SIEGES_OPTIONS = ["До 5", "6", "7", "8"]
+REQUIREMENTS_OPTIONS = [1, 4, 8, 12, 16, 20, 24, 28]
+LKV_OPTIONS = [100, 200, 300, 400, 500, 600, 700, 800]
+SIEGES_OPTIONS = [5, 6, 7, 8]
 CLAN_LEVEL_OPTIONS = ["20", "21", "22", "23", "24", "25", "26", "27"]
 
 
@@ -46,6 +48,7 @@ async def create_player():
         requirements_hydra=random.choice(REQUIREMENTS_OPTIONS),
         requirements_himera=random.choice(REQUIREMENTS_OPTIONS),
         requirements_lkv=random.choice(LKV_OPTIONS),
+        photo=None
     )
 
 async def publish_all_players():
@@ -74,13 +77,14 @@ async def create_clan():
         title=faker.sentence(nb_words=3).strip("."),
         name=faker.company(),
         tg_tag=_random_tg_tag(),
+        clan_tag="tag",
         photo=None,
         level=random.choice(CLAN_LEVEL_OPTIONS),
         language=random.choice(LANGUAGES),
         sieges_league=random.choice(SIEGES_OPTIONS),
         requirements_hydra=random.choice(REQUIREMENTS_OPTIONS),
-        requirements_himera=random.choice(LKV_OPTIONS),
-        requirements_lkv=random.choice(SIEGES_OPTIONS),
+        requirements_himera=random.choice(REQUIREMENTS_OPTIONS),
+        requirements_lkv=random.choice(LKV_OPTIONS)
     )
 
 
@@ -141,12 +145,21 @@ async def create_reviews(count: int = 200, entities: list[str] | None = None):
         await create_review(entity=entity, profile_id=profile_id)
 
 
+from sqlalchemy import delete
+from src.fit.models import Review
+from src.player.models import Player
+from src.clan.models import Clan
+
+
 async def drop_all():
-    players = await player_repository.get_all_players()
-    for p in players:
-        await player_repository.delete_player(player_id=p.id)
+    async with get_async_session() as session:
+        await session.execute(delete(Review))
+        await session.execute(delete(Player))
+        await session.execute(delete(Clan))
+        await session.commit()
 
 async def main():
+    await drop_all()
     await create_players()
     await publish_all_players()
     await create_clans()

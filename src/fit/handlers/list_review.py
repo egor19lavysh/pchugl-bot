@@ -2,8 +2,8 @@ from aiogram import Router, F
 from aiogram.types import CallbackQuery, InlineKeyboardMarkup
 from aiogram.fsm.context import FSMContext
 from src.fit.service import service
-from src.fit.keyboards import review_pagination_kb, review_control_kb
-from src.fit.handlers.handlers import show_profile
+from src.fit.keyboards import review_pagination_kb, review_back
+#from src.fit.handlers.handlers import show_profile
 from src.fit.models import Review
 
 
@@ -40,7 +40,7 @@ async def reviews_navigation_handler(callback: CallbackQuery, state: FSMContext)
 
     reviews = await service.get_reviews(entity=entity, profile_id=profile_id)
     if not reviews:
-        await callback.message.answer("Пока нет отзывов для этой анкеты.", reply_markup=await review_control_kb())
+        await callback.message.answer("Пока нет отзывов для этой анкеты.", reply_markup=await review_back(profile_id=profile_id))
         return
 
     if index < 0 or index >= len(reviews):
@@ -54,12 +54,6 @@ async def reviews_navigation_handler(callback: CallbackQuery, state: FSMContext)
     )
 
 
-@router.callback_query(F.data == "review_back")
-async def review_back_handler(callback: CallbackQuery, state: FSMContext):
-    await callback.answer()
-    await callback.message.delete()
-    await show_profile(bot=callback.bot, user_id=callback.from_user.id, state=state)
-
 @router.callback_query(F.data.startswith("reviews_"))
 async def reviews_start_handler(callback: CallbackQuery, state: FSMContext):
     await callback.answer()
@@ -67,11 +61,6 @@ async def reviews_start_handler(callback: CallbackQuery, state: FSMContext):
 
     data = await state.get_data()
     await state.set_state(None)
-
-    if action_msg := data.get("action_msg"):
-        await callback.bot.delete_message(chat_id=callback.from_user.id, message_id=action_msg)
-        await state.update_data(action_msg=None)
-
 
 
     parts = callback.data.split("_")
@@ -88,7 +77,7 @@ async def reviews_start_handler(callback: CallbackQuery, state: FSMContext):
 
     reviews = await service.get_reviews(entity=entity, profile_id=profile_id)
     if not reviews:
-        await callback.message.answer("Пока нет отзывов для этой анкеты.", reply_markup=await review_control_kb())
+        await callback.message.answer("Пока нет отзывов для этой анкеты.", reply_markup=await review_back(profile_id=profile_id))
         return
 
     await state.update_data(entity=entity, profile_id=profile_id, review_index=0)

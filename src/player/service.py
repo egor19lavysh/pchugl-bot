@@ -87,9 +87,9 @@ class PlayerService:
                 level=player.level,
                 account_strength=player.account_strength,
                 language=player.language,
-                hydra=player.requirements_hydra,
-                himera=player.requirements_himera,
-                lkv=player.requirements_lkv,
+                hydra=f"{player.requirements_hydra}B",
+                himera=f"{player.requirements_himera}B",
+                lkv=f"{player.requirements_lkv}K",
                 sieges=player.sieges_league
             )
         return None

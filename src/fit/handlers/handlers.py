@@ -1,5 +1,5 @@
 from aiogram import Router, F, Bot
-from aiogram.types import Message, CallbackQuery
+from aiogram.types import Message, CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.fsm.context import FSMContext
 from src.fit.keyboards import *
 from src.fit.states import *
@@ -26,18 +26,7 @@ NEXT = "Дальше"
 QUIT = "Выйти"
 
 
-@router.callback_query(F.data.startswith("fit_"))
-async def fit_handler(callback: CallbackQuery, state: FSMContext):
-    await callback.answer()
-    await callback.message.delete()
 
-    entity = callback.data.split("_")[-1]
-    if entity in ["player", "clan"]:
-        await state.update_data(
-            entity=entity
-            ) 
-
-        await callback.message.answer(SEACH_TYPE, reply_markup=await search_type())
 
 @router.callback_query(F.data.startswith("search_"))
 async def search_handler(callback: CallbackQuery, state: FSMContext):
@@ -83,6 +72,9 @@ async def start_fit(bot: Bot, user_id: int, state: FSMContext):
         "requirements_lkv": requirements_lkv
     }
 
+    await state.set_state(None)
+
+
     if entity:
         if entity == "player":
             profiles = await service.filter_players(user_id=user_id, filters=filters)
@@ -96,84 +88,115 @@ async def start_fit(bot: Bot, user_id: int, state: FSMContext):
                 await bot.send_message(chat_id=user_id, text=NO_CLANS, reply_markup=await back_to_search())
             await state.clear()
             return
+        
 
         random.shuffle(profiles)
         await state.update_data(
             profiles=profiles,
-            index=0
+            page=0
         )
 
-        await show_profile(bot=bot, user_id=user_id, state=state)
+        await show_profiles_page(bot=bot, user_id=user_id, state=state)
     else:
         await bot.send_message(chat_id=user_id, text="Я потерял сущность поиска... Попоробуйте снова")
 
-async def show_profile(bot: Bot, user_id: int, state: FSMContext):
+@router.callback_query(F.data == "fit_list")
+async def fit_list(callback: CallbackQuery, state: FSMContext):
+    await callback.answer()
+    await callback.message.delete()
+
+    await show_profiles_page(bot=callback.bot, user_id=callback.from_user.id, state=state)
+
+async def show_profiles_page(bot: Bot, user_id: int, state: FSMContext):
     data = await state.get_data()
 
     profiles = data.get("profiles")
-    index = data.get("index", 0)
     entity = data.get("entity")
+    page = data.get("page", 0)
+
+    if profiles:
+        await bot.send_message(chat_id=user_id, text="Выберите анкету:", reply_markup=await profiles_page_kb(profiles=profiles, page=page))
+    else:
+        if entity == "player":
+            await bot.send_message(chat_id=user_id, text=NO_PLAYERS, reply_markup=await back_to_search())
+        elif entity == "clan":
+            await bot.send_message(chat_id=user_id, text=NO_CLANS, reply_markup=await back_to_search())
+        else:
+            await bot.send_message(chat_id=user_id, text="Анкеты не найдены...", reply_markup=await back_to_search())
+        await state.clear()
+
+
+
+@router.callback_query(F.data.startswith("fit_prev_") | F.data.startswith("fit_next_"))
+async def fit_page_handler(callback: CallbackQuery, state: FSMContext):
+    await callback.answer()
+
+    data = await state.get_data()
+    profiles = data.get("profiles", [])
 
     if not profiles:
-        await bot.send_message(chat_id=user_id, text="Анкеты не нашлись... Попробуйте снова", reply_markup=await back_to_search())
+        await callback.message.answer("Анкеты не найдены...", reply_markup=await back_to_search())
         await state.clear()
         return
 
-    if -1 < index < len(profiles):
-        profile = profiles[index]
-        info = await service.get_info(profile=profile)
-        if getattr(profile, "photo", None):
-            try:
-                msg = await bot.send_photo(chat_id=user_id, photo=profile.photo, caption=info, reply_markup=await profile_action(entity=entity, profile_id=profile.id))
-            except Exception as e:
-                print(e)
-                msg = await bot.send_message(chat_id=user_id, text=info, reply_markup=await profile_action(entity=entity, profile_id=profile.id))
-        else:
-            msg = await bot.send_message(chat_id=user_id, text=info, reply_markup=await profile_action(entity=entity, profile_id=profile.id))
+    new_page = int(callback.data.split("_")[-1])
 
-        action_msg = await bot.send_message(chat_id=user_id, text="Выберите дейстивие:", reply_markup=await fit_action())
-        await state.update_data(
-            profile_msg=msg.message_id,
-            action_msg=action_msg.message_id
-        )
-        
-        await state.set_state(FitChoice.choice)
-    else:
-        await bot.send_message(chat_id=user_id, text=FINISH_FIT, reply_markup=await back_to_search())
+    per_page = 16
+    max_page = (len(profiles) - 1) // per_page
+    if new_page < 0 or new_page > max_page:
+        await callback.answer("Страница недоступна", show_alert=True)
+        return
 
-@router.message(FitChoice.choice)
-async def fit_choice_handler(message: Message, state: FSMContext):
+    await state.update_data(page=new_page)
+
+    kb = await profiles_page_kb(profiles=profiles, page=new_page)
+    try:
+        await callback.message.edit_text("Выберите анкету:", reply_markup=kb)
+    except Exception:
+        await callback.message.answer("Выберите анкету:", reply_markup=kb)
+
+
+@router.callback_query(F.data.startswith("fit_profile_"))
+async def fit_profile_handler(callback: CallbackQuery, state: FSMContext):
+    await callback.answer()
+    await callback.message.delete()
+
+    profile_id = int(callback.data.split("_")[-1])
 
     data = await state.get_data()
-    index = data.get("index", 0)
 
-    if choice := message.text:
+    profiles = data.get("profiles")
+    entity = data.get("entity")
 
-        if profile_msg := data.get("profile_msg"):
-            await message.bot.delete_message(chat_id=message.from_user.id, message_id=profile_msg)
-            await state.update_data(profile_msg=None)
-            
-        if action_msg := data.get("action_msg"):
-            await message.bot.delete_message(chat_id=message.from_user.id, message_id=action_msg)
-            await state.update_data(action_msg=None)
+    if not profiles:
+        await callback.message.answer(text="Анкеты не нашлись... Попробуйте снова", reply_markup=await back_to_search())
+        await state.clear()
+        return
 
-        if choice == NEXT:
-            await state.update_data(index=index + 1)
-            await show_profile(bot=message.bot, user_id=message.from_user.id, state=state)
+    profile = await service.get_profile(entity=entity, profile_id=profile_id)
+    info = await service.get_info(profile=profile)
 
-        elif choice == BACK:
-            await state.update_data(index=index - 1 if index > 0 else 0)
-            await show_profile(bot=message.bot, user_id=message.from_user.id, state=state)
-
-
-        elif choice == QUIT:
-            await message.answer("Подбор анкет отменен", reply_markup=ReplyKeyboardRemove())
-            await state.clear()
-
-        else:
-            await message.answer("Выберите одно из трех действий:", reply_markup=await fit_action())
-            return
-
-
-            
+    
+    if getattr(profile, "photo", None):
+        try:
+            await callback.message.answer_photo(photo=profile.photo, caption=info, reply_markup=await profile_action(entity=entity, profile_id=profile.id))
+        except Exception as e:
+            print(e)
+            await callback.message.answer(text=info, reply_markup=await profile_action(entity=entity, profile_id=profile.id))
+    else:
+        await callback.message.answer(text=info, reply_markup=await profile_action(entity=entity, profile_id=profile.id))
         
+
+
+@router.callback_query(F.data.startswith("fit_"))
+async def fit_handler(callback: CallbackQuery, state: FSMContext):
+    await callback.answer()
+    await callback.message.delete()
+
+    entity = callback.data.split("_")[-1]
+    if entity in ["player", "clan"]:
+        await state.update_data(
+            entity=entity
+            ) 
+
+        await callback.message.answer(SEACH_TYPE, reply_markup=await search_type())
