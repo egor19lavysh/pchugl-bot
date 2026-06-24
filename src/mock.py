@@ -11,7 +11,7 @@ faker = Faker()
 
 LANGUAGES = ["RU", "UA", "EN", "Другое"]
 REQUIREMENTS_OPTIONS = [1, 4, 8, 12, 16, 20, 24, 28]
-LKV_OPTIONS = [100, 200, 300, 400, 500, 600, 700, 800]
+LKV_OPTIONS = [0, 100, 200, 300, 400, 500, 600, 700, 800]
 SIEGES_OPTIONS = [5, 6, 7, 8]
 CLAN_LEVEL_OPTIONS = ["20", "21", "22", "23", "24", "25", "26", "27"]
 
@@ -160,11 +160,11 @@ async def drop_all():
 
 async def main():
     await drop_all()
-    await create_players()
-    await publish_all_players()
-    await create_clans()
-    await publish_all_clans()
-    await create_reviews()
+    #await create_players()
+    #await publish_all_players()
+    #await create_clans()
+    #await publish_all_clans()
+    #await create_reviews()
 
 if __name__ == "__main__":
     asyncio.run(main())
