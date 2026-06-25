@@ -112,6 +112,20 @@ alembic upgrade head
 python -m src.bot
 ```
 
+## Актуатор `apscheduler`
+
+- Проект использует `apscheduler.schedulers.asyncio.AsyncIOScheduler` для автоматической отложенной работы.
+- Планировщик создаётся в [src/bot.py](src/bot.py#L1) и запускается при старте бота.
+- В `src/bot.py` он настраивается с `timezone="Europe/Moscow"` и хранится в диспетчере как `dp['scheduler']`.
+- Две регулярные задачи добавляются сразу при запуске:
+  - `player_service.complete_unpublishing` — проверка и снятие с публикации просроченных анкет игроков каждые 24 часа.
+  - `clan_service.complete_unpublishing` — то же для анкет кланов.
+- При публикации анкеты используется метод `schedule_unpublish` в сервисах:
+  - [src/player/service.py](src/player/service.py#L1)
+  - [src/clan/service.py](src/clan/service.py#L1)
+- `schedule_unpublish` создаёт задачу типа `date`, которая выполняется один раз в момент истечения срока публикации и снимает анкету с публикации.
+- Если по какой-то причине задача не сработала, `complete_unpublishing` делает дополнительную проверку и снимает просроченные анкеты вручную.
+
 ## Модель `Player` (ключевые поля)
 
 Поля, важные для поиска и фильтрации:
