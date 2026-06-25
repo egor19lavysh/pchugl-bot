@@ -389,7 +389,7 @@ async def requirements_lkv_handler(callback: CallbackQuery, state: FSMContext):
             await callback.message.answer(LKV, reply_markup=await lkv_kb())
             return
         
-        if data not in [100, 2, 200, 300, 400, 500, 600, 700]:
+        if data not in [100, 101, 200, 300, 400, 500, 600, 700]:
             await callback.message.answer("Некорректное значение!")
             await callback.message.answer(LKV, reply_markup=await lkv_kb())
             return

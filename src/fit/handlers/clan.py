@@ -147,7 +147,7 @@ async def clan_lkv_handler(callback: CallbackQuery, state: FSMContext):
             await callback.message.answer(LKV, reply_markup=await clan_lkv_kb(skip=True))
             return
         
-        if data not in [0, 2, 100, 200, 300, 400, 500, 600, 700]:
+        if data not in [0, 101, 100, 200, 300, 400, 500, 600, 700]:
             await callback.message.answer("Некорректное значение!")
             await callback.message.answer(LKV, reply_markup=await clan_lkv_kb(skip=True))
             return

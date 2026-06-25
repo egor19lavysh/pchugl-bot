@@ -81,7 +81,7 @@ class ClanRepository:
                     elif field_name  == "requirements_lkv":
                         if value == 100:
                             stmt = stmt.where(column == value)
-                        elif value == 2:
+                        elif value == 101:
                             stmt = stmt.where(column >= 100)
                         else:
                             stmt = stmt.where(column >= value)

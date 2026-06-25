@@ -89,7 +89,7 @@ class PlayerService:
                 language=player.language,
                 hydra=f"{player.requirements_hydra if player.requirements_hydra != 2 else 1}B",
                 himera=f"{player.requirements_himera if player.requirements_himera != 2 else 1}B",
-                lkv=f"{player.requirements_lkv if player.requirements_lkv != 2 else 100}K",
+                lkv=f"{player.requirements_lkv if player.requirements_lkv != 101 else 100}K",
                 sieges=player.sieges_league
             )
         return None
