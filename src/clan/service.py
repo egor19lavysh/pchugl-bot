@@ -84,9 +84,9 @@ class ClanService:
                 clan_tag=clan.clan_tag if clan.clan_tag else "не указан",
                 level=clan.level,
                 language=clan.language,
-                hydra=f"{clan.requirements_hydra}B",
-                himera=f"{clan.requirements_himera}B",
-                lkv=f"{clan.requirements_lkv}K" if clan.requirements_lkv != 0 else "Нет",
+                hydra=f"{clan.requirements_hydra if clan.requirements_hydra != 2 else 1}B",
+                himera=f"{clan.requirements_himera if clan.requirements_himera != 2 else 1}B",
+                lkv=f"{clan.requirements_lkv if clan.requirements_lkv != 2 else 100}K" if clan.requirements_lkv != 0 else "Нет",
                 sieges=clan.sieges_league
             )
         return None

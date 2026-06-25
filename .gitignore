@@ -4,3 +4,4 @@ __pycache__
 *.json
 *.sqlite3
 .log
+alembic/versions/*

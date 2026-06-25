@@ -28,7 +28,7 @@ async def player_lang_handler(callback: CallbackQuery, state: FSMContext):
     await callback.answer()
     data = callback.data.split("_")[-1]
 
-    await callback.message.edit_text(data, reply_markup=None)
+    await callback.message.delete()
 
     if data == BACK:
         await callback.message.answer(SEACH_TYPE, reply_markup=await search_type())
@@ -55,7 +55,7 @@ async def player_hydra_handler(callback: CallbackQuery, state: FSMContext):
     await callback.answer()
     data = callback.data.split("_")[-1]
 
-    await callback.message.edit_text(data, reply_markup=None)
+    await callback.message.delete()
 
 
     if data == BACK:
@@ -74,7 +74,7 @@ async def player_hydra_handler(callback: CallbackQuery, state: FSMContext):
             await callback.message.answer(HYDRA, reply_markup=await player_hydra_kb(skip=True))
             return
 
-        if data not in [1, 4, 8, 12, 16, 20, 24, 28]:
+        if data not in [1, 2, 4, 8, 12, 16, 20, 24]:
             await callback.message.answer("Некорректное значение!")
             await callback.message.answer(HYDRA, reply_markup=await player_hydra_kb(skip=True))
             return
@@ -92,7 +92,7 @@ async def player_himera_handler(callback: CallbackQuery, state: FSMContext):
     await callback.answer()
     data = callback.data.split("_")[-1]
 
-    await callback.message.edit_text(data, reply_markup=None)
+    await callback.message.delete()
 
 
     if data == BACK:
@@ -111,7 +111,7 @@ async def player_himera_handler(callback: CallbackQuery, state: FSMContext):
             await callback.message.answer(HIMERA, reply_markup=await player_himera_kb(skip=True))
             return
             
-        if data not in [1, 4, 8, 12, 16, 20, 24, 28]:
+        if data not in [1, 2, 4, 8, 12, 16, 20, 24]:
             await callback.message.answer("Некорректное значение!")
             await callback.message.answer(HIMERA, reply_markup=await player_himera_kb(skip=True))
             return
@@ -128,7 +128,7 @@ async def player_lkv_handler(callback: CallbackQuery, state: FSMContext):
     await callback.answer()
     data = callback.data.split("_")[-1]
 
-    await callback.message.edit_text(data, reply_markup=None)
+    await callback.message.delete()
 
 
     if data == BACK:
@@ -147,7 +147,7 @@ async def player_lkv_handler(callback: CallbackQuery, state: FSMContext):
             await callback.message.answer(LKV, reply_markup=await player_lkv_kb(skip=True))
             return
             
-        if data not in [100, 200, 300, 400, 500, 600, 700, 800]:
+        if data not in [2, 100, 200, 300, 400, 500, 600, 700]:
             await callback.message.answer("Некорректное значение!")
             await callback.message.answer(LKV, reply_markup=await player_lkv_kb(skip=True))
             return
@@ -164,7 +164,7 @@ async def player_sieges_handler(callback: CallbackQuery, state: FSMContext):
     await callback.answer()
     data = callback.data.split("_")[-1]
 
-    await callback.message.edit_text(data, reply_markup=None)
+    await callback.message.delete()
 
 
     if data == BACK:

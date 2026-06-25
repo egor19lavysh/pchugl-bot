@@ -242,7 +242,7 @@ async def requirements_hydra_handler(callback: CallbackQuery, state: FSMContext)
             await callback.message.answer(HYDRA, reply_markup=await hydra_kb())
             return
 
-        if data not in [1, 4, 8, 12, 16, 20, 24, 28]:
+        if data not in [1, 2, 4, 8, 12, 16, 20, 24]:
             await callback.message.answer("Некорректное значение!")
             await callback.message.answer(HYDRA, reply_markup=await hydra_kb())
             return
@@ -278,7 +278,7 @@ async def requirements_himera_handler(callback: CallbackQuery, state: FSMContext
             await callback.message.answer(HIMERA, reply_markup=await himera_kb())
             return
         
-        if data not in [1, 4, 8, 12, 16, 20, 24, 28]:
+        if data not in [1, 2, 4, 8, 12, 16, 20, 24]:
             await callback.message.answer("Некорректное значение!")
             await callback.message.answer(HIMERA, reply_markup=await himera_kb())
             return
@@ -314,7 +314,7 @@ async def requirements_lkv_handler(callback: CallbackQuery, state: FSMContext):
             await callback.message.answer(LKV, reply_markup=await lkv_kb())
             return
         
-        if data not in [0, 100, 200, 300, 400, 500, 600, 700, 800]:
+        if data not in [0, 2, 100, 200, 300, 400, 500, 600, 700]:
             await callback.message.answer("Некорректное значение!")
             await callback.message.answer(LKV, reply_markup=await lkv_kb())
             return

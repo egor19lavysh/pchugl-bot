@@ -58,11 +58,15 @@ class PlayerRepository:
                     if field_name in ("requirements_hydra", "requirements_himera"):
                         if value == 1:
                             stmt = stmt.where(column == value)
+                        elif value == 2:
+                            stmt = stmt.where(column >= 1)
                         else:
                             stmt = stmt.where(column >= value)
                     elif field_name  == "requirements_lkv":
                         if value == 100:
                             stmt = stmt.where(column == value)
+                        elif value == 2:
+                            stmt = stmt.where(column >= 100)
                         else:
                             stmt = stmt.where(column >= value)
                     elif field_name == "sieges_league":

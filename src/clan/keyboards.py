@@ -51,10 +51,10 @@ async def level_kb() -> InlineKeyboardMarkup:
 
 async def hydra_kb(skip: bool = False) -> InlineKeyboardMarkup:
     kb = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="До 1В", callback_data="hydra_1"), InlineKeyboardButton(text="От 4В", callback_data="hydra_4")],
-        [InlineKeyboardButton(text="От 8В", callback_data="hydra_8"), InlineKeyboardButton(text="От 12В", callback_data="hydra_12")],
-        [InlineKeyboardButton(text="От 16В", callback_data="hydra_16"), InlineKeyboardButton(text="От 20В", callback_data="hydra_20")],
-        [InlineKeyboardButton(text="От 24В", callback_data="hydra_24"), InlineKeyboardButton(text="От 28В", callback_data="hydra_28")],
+        [InlineKeyboardButton(text="До 1В", callback_data="hydra_1"), InlineKeyboardButton(text="От 1В", callback_data="hydra_2")],
+        [InlineKeyboardButton(text="От 4В", callback_data="hydra_4"), InlineKeyboardButton(text="От 8В", callback_data="hydra_8")],
+        [InlineKeyboardButton(text="От 12В", callback_data="hydra_12"), InlineKeyboardButton(text="От 16В", callback_data="hydra_16")],
+        [InlineKeyboardButton(text="От 20В", callback_data="hydra_20"), InlineKeyboardButton(text="От 24В", callback_data="hydra_24")],
         [InlineKeyboardButton(text="Назад", callback_data="hydra_Назад")],
 
     ])
@@ -67,10 +67,10 @@ async def hydra_kb(skip: bool = False) -> InlineKeyboardMarkup:
 
 async def himera_kb(skip: bool = False) -> InlineKeyboardMarkup:
     kb = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="До 1В", callback_data="himera_1"), InlineKeyboardButton(text="От 4В", callback_data="himera_4")],
-        [InlineKeyboardButton(text="От 8В", callback_data="himera_8"), InlineKeyboardButton(text="От 12В", callback_data="himera_12")],
-        [InlineKeyboardButton(text="От 16В", callback_data="himera_16"), InlineKeyboardButton(text="От 20В", callback_data="himera_20")],
-        [InlineKeyboardButton(text="От 24В", callback_data="himera_24"), InlineKeyboardButton(text="От 28В", callback_data="himera_28")],
+        [InlineKeyboardButton(text="До 1В", callback_data="himera_1"), InlineKeyboardButton(text="От 1В", callback_data="himera_2")],
+        [InlineKeyboardButton(text="От 4В", callback_data="himera_4"), InlineKeyboardButton(text="От 8В", callback_data="himera_8")],
+        [InlineKeyboardButton(text="От 12В", callback_data="himera_12"), InlineKeyboardButton(text="От 16В", callback_data="himera_16")],
+        [InlineKeyboardButton(text="От 20В", callback_data="himera_20"), InlineKeyboardButton(text="От 24В", callback_data="himera_24")],
         [InlineKeyboardButton(text="Назад", callback_data="himera_Назад")],
 
     ])
@@ -84,10 +84,10 @@ async def himera_kb(skip: bool = False) -> InlineKeyboardMarkup:
 async def lkv_kb(skip: bool = False) -> InlineKeyboardMarkup:
     kb = InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text="Нет", callback_data="lkv_0"), InlineKeyboardButton(text="До 100K", callback_data="lkv_100")],
-        [InlineKeyboardButton(text="От 200K", callback_data="lkv_200"), InlineKeyboardButton(text="От 300К", callback_data="lkv_300")],
-        [InlineKeyboardButton(text="От 400K", callback_data="lkv_400"), InlineKeyboardButton(text="От 500К", callback_data="lkv_500")],
-        [InlineKeyboardButton(text="От 600K", callback_data="lkv_600"), InlineKeyboardButton(text="От 700К", callback_data="lkv_700")],
-        [InlineKeyboardButton(text="От 800К", callback_data="lkv_800"), InlineKeyboardButton(text="Назад", callback_data="lkv_Назад")],
+        [InlineKeyboardButton(text="От 100K", callback_data="lkv_2"), InlineKeyboardButton(text="От 200K", callback_data="lkv_200")],
+        [InlineKeyboardButton(text="От 300К", callback_data="lkv_300"), InlineKeyboardButton(text="От 400K", callback_data="lkv_400")],
+        [InlineKeyboardButton(text="От 500К", callback_data="lkv_500"), InlineKeyboardButton(text="От 600K", callback_data="lkv_600")],
+        [InlineKeyboardButton(text="От 700К", callback_data="lkv_700"), InlineKeyboardButton(text="Назад", callback_data="lkv_Назад")],
 
     ])
 
