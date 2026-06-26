@@ -12,10 +12,10 @@ router = Router()
 
 def format_review_text(review: Review) -> str:
     return (
-        f'*Игрок*: {"@" + review.reviewer if review.reviewer else "не указан"}\n'
-        f"*Оценка*: {review.score}⭐️\n"
-        f"*Текст*: {review.text}\n"
-        f"*Дата*: {review.created_at.strftime('%Y-%m-%d %H:%M')}"
+        f'Игрок: {"@" + review.reviewer if review.reviewer else "не указан"}\n'
+        f"Оценка: {review.score}⭐️\n"
+        f"Текст: {review.text}\n"
+        f"Дата: {review.created_at.strftime('%Y-%m-%d %H:%M')}"
     )
 
 
