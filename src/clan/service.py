@@ -112,7 +112,7 @@ class ClanService:
             else:
                 days = 1
                 
-            interval = timedelta(minutes=days)
+            interval = timedelta(days=days)
             expiration_date = datetime.now() + interval
 
             try:
