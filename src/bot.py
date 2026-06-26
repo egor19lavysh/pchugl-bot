@@ -18,17 +18,34 @@ from aiogram.fsm.context import FSMContext
 
 logger = logging.getLogger(__name__)
 
-
 dp = Dispatcher()
 
 @dp.error()
 async def error_handler(event: ErrorEvent, state: FSMContext = None):
     logger.info("Critical error caused by %s", event.exception)
+    
     if state:
         await state.clear()
-    await event.update.message.answer("Что-то пошло не так... Попробуйте заново")
-
-
+    
+    # Проверяем, есть ли возможность ответить пользователю
+    update = event.update
+    
+    # Пытаемся ответить в зависимости от типа обновления
+    try:
+        if update.message:
+            await update.message.answer("Что-то пошло не так... Попробуйте заново")
+        elif update.callback_query:
+            await update.callback_query.message.answer("Что-то пошло не так... Попробуйте заново")
+            await update.callback_query.answer()  # Закрываем уведомление
+        elif update.inline_query:
+            # Для инлайн запросов можно ответить через result
+            pass
+        elif update.chat_member:
+            # Для обновлений чат-мембера
+            pass
+        # Добавьте другие типы обновлений по необходимости
+    except Exception as e:
+        logger.error(f"Failed to send error message: {e}")
 async def main() -> None:
     scheduler = AsyncIOScheduler(timezone="Europe/Moscow")
     bot = Bot(token=settings.BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.MARKDOWN))
