@@ -46,9 +46,11 @@ async def error_handler(event: ErrorEvent, state: FSMContext = None):
         # Добавьте другие типы обновлений по необходимости
     except Exception as e:
         logger.error(f"Failed to send error message: {e}")
+
+
 async def main() -> None:
     scheduler = AsyncIOScheduler(timezone="Europe/Moscow")
-    bot = Bot(token=settings.BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.MARKDOWN))
+    bot = Bot(token=settings.BOT_TOKEN)
     scheduler.start()
 
     scheduler.add_job(

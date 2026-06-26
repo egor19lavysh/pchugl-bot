@@ -12,7 +12,7 @@ PROFILES = "Вот твои анкеты кланов:"
 NO_PROFILES = "У тебя еще нет анкет. Можешь создать их командой /register"
 NO_PROFILE = "Почему-то анкета не нашлась..."
 BACK = "Назад"
-TITLE = "***{title}***\n"
+TITLE = "{title}\n"
 
 @router.callback_query(F.data == "clan")
 async def user_clans_handler(callback: CallbackQuery):

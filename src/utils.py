@@ -16,25 +16,25 @@ async def is_subscriber(bot: Bot, user_id: int) -> bool:
 
 
 PLAYER_TEMPLATE = """
-*Ник*: {nickname}
-*Тг юзернейм*: {tg_tag}
-*Уровень*: {level}
-*Сила аккаунта*: {account_strength}
-*Язык*: {language}
-*Гидра*: {hydra}
-*Химера*: {himera}
-*ЛКВ*: {lkv}
-*Осады*: {sieges}
+Ник: {nickname}
+Тг юзернейм: {tg_tag}
+Уровень: {level}
+Сила аккаунта: {account_strength}
+Язык: {language}
+Гидра: {hydra}
+Химера: {himera}
+ЛКВ: {lkv}
+Осады: {sieges}
 """
 
 CLAN_TEMPLATE = """
-*Название клана*: {name}
-*Тг юзернейм*: {tg_tag}
-*Тег клана*: {clan_tag}
-*Уровень*: {level}
-*Язык*: {language}
-*Гидра*: {hydra}
-*Химера*: {himera}
-*ЛКВ*: {lkv}
-*Осады*: {sieges}
+Название клана: {name}
+Тг юзернейм: {tg_tag}
+Тег клана: {clan_tag}
+Уровень: {level}
+Язык: {language}
+Гидра: {hydra}
+Химера: {himera}
+ЛКВ: {lkv}
+Осады: {sieges}
 """
