@@ -37,13 +37,13 @@ class FitService:
             # attach average rating if exists
             avg, count = await self.get_average_rating(entity="player", profile_id=profile.id)
             if avg is not None:
-                info = f"{info}\n*Рейтинг*: {avg:.2f}⭐️ ({count} отзывов)"
+                info = f"{info}\nРейтинг: {avg:.2f}⭐️ ({count} отзывов)"
             return info
         elif isinstance(profile, Clan):
             info = await clan_service.get_clan_info(clan_id=profile.id) or ""
             avg, count = await self.get_average_rating(entity="clan", profile_id=profile.id)
             if avg is not None:
-                info = f"{info}\n*Рейтинг*: {avg:.2f}⭐️ ({count} отзывов)"
+                info = f"{info}\nРейтинг: {avg:.2f}⭐️ ({count} отзывов)"
             return info
         else:
             raise Exception("Неправильный тип данных")
